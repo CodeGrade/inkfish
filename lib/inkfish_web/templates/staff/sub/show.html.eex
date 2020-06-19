@@ -1,0 +1,132 @@
+<h1>Show Sub</h1>
+
+<p>
+  <%= link("Student View",
+    to: Routes.sub_path(@conn, :show, @sub)) %>
+</p>
+
+<ul>
+  <li>
+    <strong>Team:</strong>
+    <%= show_team(@sub.team) %>
+  </li>
+
+  <li>
+    <strong>Submitter:</strong>
+    <%= user_display_name(@sub.reg.user) %>
+    (<%= @sub.reg.user.login %>)
+  </li>
+
+  <li>
+    <strong>Timestamp:</strong>
+    <%= @sub.inserted_at %>
+  </li>
+ 
+  <li>
+    <strong>Active:</strong>
+    <%= @sub.active %>
+  </li>
+
+  <li>
+    <% cset = Inkfish.Subs.change_sub(
+      %{ @sub | ignore_late_penalty: !@sub.ignore_late_penalty }
+      ) %>
+    <% action = Routes.staff_sub_path(@conn, :update, @sub.id) %>
+    <%= form_for cset, action, fn f -> %>
+      <strong>Ignore Late Penalty:</strong>
+      <%= @sub.ignore_late_penalty %>
+      &nbsp;
+      <%= hidden_input f, :ignore_late_penalty %>
+      <%= submit "Toggle", class: "btn btn-secondary btn-sm" %>
+    <% end %>
+  </li>
+
+  <li>
+    <strong>Score:</strong>
+    <%= @sub.score || "∅" %>
+  </li>
+
+  <li>
+    <strong>Hours Spent:</strong>
+    <%= @sub.hours_spent %>
+  </li>
+
+  <li>
+    <strong>Upload:</strong>
+    <%= link(@sub.upload.name,
+      to: Routes.upload_path(@conn, :download, @sub.upload, @sub.upload.name)) %>
+    (<%= link "View Files", to: Routes.sub_path(@conn, :files, @sub) %>)
+</ul>
+
+<p><strong>Note:</strong></p>
+
+<p><%= sanitize_markdown(@sub.note) %></p>
+
+<h2>Grades</h2>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Score</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <%= for grade_column <- @assignment.grade_columns do %>
+    <% grade = Enum.find(@sub.grades, &(&1.grade_column_id == grade_column.id)) %>
+    <tr>
+      <td><%= grade_column.name %></td>
+      <td><%= show_score(@conn, grade) %> / <%= grade_column.points %></td>
+      <td>
+        <%= if grade_column.kind == "feedback" do %>
+          <%= if grade do %>
+            <%= link "Edit Grade", to: Routes.staff_grade_path(@conn, :edit, grade) %>
+          <% else %>
+            <% grade = %Inkfish.Grades.Grade{
+              grade_column_id: grade_column.id, sub_id: @sub.id
+            } %>
+            <% cset = Inkfish.Grades.change_grade(grade) %>
+            <% action = Routes.staff_sub_grade_path(@conn, :create, @sub.id) %>
+            <%= form_for cset, action, fn f -> %>
+              <%= hidden_input f, :sub_id %>
+              <%= hidden_input f, :grade_column_id %>
+              <%= submit "Create Grade", class: "btn btn-primary btn-sm" %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <!-- FIXME: Add form to edit number grade here. -->
+          (none)
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<%= unless Enum.empty?(@autogrades) do %>
+  <h2>Grading Script Output</h2>
+  <%= Enum.map @autogrades, fn {grade, token, log} -> %>
+    <% cset = Inkfish.Grades.change_grade(grade) %>
+    <% path = Routes.staff_grade_path(@conn, :rerun_script, grade) %>
+    <%= form_for cset, path, [method: :post], fn _f -> %>
+      <h3>
+        <%= grade.grade_column.name %> &nbsp;
+	<%= submit "Rerun Script", class: "btn btn-secondary" %>
+      </h3>
+    <% end %>
+    <%= if log do %>
+      <p><strong>Sandbox Exit Status</strong></p>
+      <pre><%= log["status"] %></pre>
+      <p><strong>Test Output</strong></p>
+      <pre><%= log["result"] %></pre>
+      <p><strong>Full Log</strong></p>
+      <pre><%= render_autograde_log(log["log"]) %></pre>
+    <% else %>
+      <div class="autograde-log"
+           data-topic="<%= "autograde:" <> grade.log_uuid %>"
+           data-token="<%= token %>">
+        <!-- React component in js/autograde.jsx -->
+        [react]
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

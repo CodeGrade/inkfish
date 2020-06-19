@@ -1,0 +1,15 @@
+<h1>Show Grade</h1>
+
+<p>
+  <%= link "Edit", to: Routes.staff_grade_path(@conn, :edit, @grade) %>
+</p>
+
+<ul>
+
+  <li>
+    <strong>Score:</strong>
+    <%= @grade.score %>
+  </li>
+
+</ul>
+

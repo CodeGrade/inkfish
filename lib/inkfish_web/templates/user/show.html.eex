@@ -1,0 +1,26 @@
+<h1>User Profile: <%= user_display_name(@user) %></h1>
+
+<%= if @current_user.is_admin || @current_user.id == @user.id do %>
+  <p>
+    <%= link "Edit Profile", to: Routes.user_path(@conn, :edit, @user) %>
+  </p>
+<% end %>
+
+<ul>
+  <li>
+    <strong>Name:</strong>
+    <%= @user.given_name %> <%= @user.surname %>
+  </li>
+
+  <li>
+    <strong>Email:</strong>
+    <%= @user.email %>
+  </li>
+
+  <li>
+    <strong>Is admin:</strong>
+    <%= @user.is_admin %>
+  </li>
+
+</ul>
+

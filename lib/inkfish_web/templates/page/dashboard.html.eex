@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="col">
+    <h1>Dashboard</h1>
+    <h2>Your Courses</h2>
+    <div class="clearfix">
+      <div class="float-right">
+        <p>
+          <%= link("List All Courses", to: Routes.course_path(@conn, :index)) %>
+        </p>
+      </div>
+    </div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <td>Course</td>
+          <td>Role</td>
+          <td>Next Due</td>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for reg <- @regs do %>
+          <tr>
+            <td>
+              <%= link(reg.course.name,
+                    to: Routes.course_path(@conn, :show, reg.course.id)) %>
+              <%= if is_staff?(reg, reg.user) do %>
+                (<%= link("Staff View",
+                  to: Routes.staff_course_path(@conn, :show, reg.course)) %>)
+              <% end %>
+            </td>
+            <td><%= show_reg_role(reg) %></td>
+            <td>
+              <% next = Map.get(@dues, reg.course_id) %>
+              <%= if next do %>
+                <%= next.name %> <br>
+                <span class="human-date"><%= next.due %></span>
+              <% else %>
+                ∅
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

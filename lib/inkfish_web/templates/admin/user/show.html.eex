@@ -1,0 +1,54 @@
+<h1>Show User</h1>
+
+<p>
+  <%= link "Edit User", to: Routes.admin_user_path(@conn, :edit, @user) %>
+</p>
+
+<ul>
+
+  <li>
+    <strong>Login:</strong>
+    <%= @user.login %>
+  </li>
+
+  <li>
+    <strong>Email:</strong>
+    <%= @user.email %>
+  </li>
+
+  <li>
+    <strong>Given name:</strong>
+    <%= @user.given_name %>
+  </li>
+
+  <li>
+    <strong>Surname:</strong>
+    <%= @user.surname %>
+  </li>
+
+  <li>
+    <strong>Nickname:</strong>
+    <%= @user.nickname %>
+  </li>
+
+  <li>
+    <strong>Is admin:</strong>
+    <%= @user.is_admin %>
+  </li>
+
+  <li>
+    <strong>Photo Upload ID:</strong>
+    <%= @user.photo_upload_id %>
+</ul>
+
+<h2>Photo</h2>
+
+<p>
+  <%= if @user.photo_upload_id do %>
+    <img src="<%= Routes.upload_path(@conn, :show, @user.photo_upload) %>"
+         class="user-photo-full">
+  <% else %>
+    <img src="<%= Routes.static_path(@conn, "/images/red_squid.jpg") %>"
+         class="user-photo-full">
+  <% end %>
+</p>

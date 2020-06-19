@@ -1,0 +1,77 @@
+
+<h1>Show Course</h1>
+
+<%= if is_staff?(@current_reg, @current_user) do %>
+  <p>
+    <%= link("Staff View",
+      to: Routes.staff_course_path(@conn, :show, @course)) %>
+  </p>
+<% end %>
+
+<ul>
+  <li>
+    <strong>Name:</strong>
+    <%= @course.name %>
+  </li>
+  <li>
+    <strong>Start date:</strong>
+    <%= @course.start_date %>
+  </li>
+</ul>
+
+<%= for bucket <- @course.buckets do %>
+  <h2><%= bucket.name %></h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Due</th>
+        <th>Weight</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for as <- bucket.assignments do %>
+        <tr>
+          <td><%= link as.name, to: Routes.assignment_path(@conn, :show, as) %></td>
+          <td><%= as.due %></td>
+          <td><%= as.weight %></td>
+          <td><%= show_score(@conn, as) %> / <%= as.points %></td>
+        </tr>
+      <% end %>
+      <tr>
+        <td>&nbsp;</td>
+        <td>weight = <%= bucket.weight %></td>
+        <td>Total:</td>
+        <td><%= show_score(@totals[bucket.id]) %>%</td>
+      </tr>
+    </tbody>
+  </table>
+<% end %>
+
+<h2>Active Teams</h2>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Members</th>
+      <th>Assignments</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for ts <- Enum.sort_by(@course.teamsets, &(&1.inserted_at)) do %>
+      <tr>
+        <td><%= ts.name %></td>
+        <%= if team = @teams[ts.id] do %>
+          <td><%= show_team_members(team) %></td>
+        <% else %>
+          <td>∅</td>
+        <% end %>
+        <td><%= show_teamset_assignments(ts) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p>Your user secret is: <%= @current_user.secret %></p>

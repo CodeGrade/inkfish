@@ -1,0 +1,76 @@
+<h1>Show Assignment</h1>
+
+<%= if is_staff?(@current_reg, @current_user) do %>
+  <p>
+    <%= link("Staff View",
+      to: Routes.staff_assignment_path(@conn, :show, @assignment)) %>
+  </p>
+<% end %>
+
+<ul>
+  <li>
+    <strong>Name:</strong>
+    <%= @assignment.name %>
+  </li>
+
+  <li>
+    <strong>Due:</strong>
+    <span class="human-date">
+      <%= @assignment.due %>
+    </span>
+  </li>
+
+  <li>
+    <strong>Weight:</strong>
+    <%= @assignment.weight %>
+  </li>
+
+  <li>
+    <strong>Starter:</strong>
+    <%= if @assignment.starter_upload do %>
+      <%= link(@assignment.starter_upload.name,
+            to: Routes.upload_path(@conn, :show, @assignment.starter_upload)) %>
+    <% else %>
+      ∅
+    <% end %>
+  </li>
+</ul>
+
+<h2>Description</h2>
+
+<div>
+  <%= trusted_markdown @assignment.desc %>
+</div>
+
+<h2>Submissions</h2>
+
+<p>
+  Your Team: <%= show_team(@team) %> <br>
+  <%= link "New Submission", to: Routes.assignment_sub_path(@conn, :new, @assignment) %>
+</p>
+
+<table class="table table-striped">
+  <thead>
+    <td>Active</td>
+    <td>Date</td>
+    <%= for gcol <- @assignment.grade_columns do %>
+      <td><%= gcol.name %></td>
+    <% end %>
+    <td>Total Score</td>
+    <td>Actions</td>
+  </thead>
+  <tbody>
+    <%= for sub <- @subs do %>
+      <tr>
+        <td style="text-align: center"><%= if sub.active, do: "✓" %></td>
+        <td><%= sub.inserted_at %></td>
+        <%= for gcol <- @assignment.grade_columns do %>
+          <% grade = Enum.find(sub.grades, &(&1.grade_column_id == gcol.id)) %>
+          <td><%= show_score(@conn, grade) %> / <%= gcol.points %></td>
+        <% end %>
+        <td><%= show_score(@conn, sub) %> / <%= assignment_total_points(@assignment) %></td>
+        <td><%= link "View", to: Routes.sub_path(@conn, :show, sub) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,26 @@
+<h1>Show Reg</h1>
+
+<ul>
+
+  <li>
+    <strong>Is student:</strong>
+    <%= @reg.is_student %>
+  </li>
+
+  <li>
+    <strong>Is prof:</strong>
+    <%= @reg.is_prof %>
+  </li>
+
+  <li>
+    <strong>Is staff:</strong>
+    <%= @reg.is_staff %>
+  </li>
+
+  <li>
+    <strong>Is grader:</strong>
+    <%= @reg.is_grader %>
+  </li>
+
+</ul>
+

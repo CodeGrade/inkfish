@@ -1,0 +1,86 @@
+
+<h1>Course: <%= @course.name %></h1>
+
+<p>
+  <%= link "Student View", to: Routes.course_path(@conn, :show, @course) %> |
+  <%= link "Edit Course", to: Routes.staff_course_path(@conn, :edit, @course) %> |
+  <%= link "Edit Buckets", to: Routes.staff_course_bucket_path(@conn, :index, @course) %> |
+  <%= link "Edit Regs", to: Routes.staff_course_reg_path(@conn, :index, @course) %> |
+  <%= link "View Reqs", to: Routes.staff_course_join_req_path(@conn, :index, @course) %>
+  <%= if length(@course.join_reqs) > 0 do %>
+    <span class="badge badge-info"><%= length(@course.join_reqs) %></span>
+  <% end %> |
+  <%= link "Gradesheet", to: Routes.staff_course_path(@conn, :gradesheet, @course) %>
+</p>
+
+<ul>
+  <li>
+    <strong>Name:</strong>
+    <%= @course.name %>
+  </li>
+
+  <li>
+    <strong>Start date:</strong>
+    <%= @course.start_date %>
+  </li>
+
+  <li>
+    <strong>Solo Teamset ID:</strong>
+    <%= @course.solo_teamset_id %>
+  </li>
+</ul>
+
+<%= for bucket <- @course.buckets do %>
+  <h2><%= bucket.name %></h2>
+  <p>weight = <%= bucket.weight %></p>
+
+  <p> <%= link("New Assignment", to:
+            Routes.staff_bucket_assignment_path(@conn, :new, bucket)) %></p>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Due</th>
+        <th>Weight</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for aa <- bucket.assignments do %>
+        <tr>
+          <td><%= link aa.name, to: Routes.staff_assignment_path(@conn, :show, aa) %></td>
+          <td><%= aa.due %></td>
+          <td><%= aa.weight %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+<h2>Teamsets</h2>
+
+<p>
+  <%= link "New Teamset", to: Routes.staff_course_teamset_path(@conn, :new, @course) %>
+</p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Assignments</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for ts <- @course.teamsets do %>
+    <tr>
+      <td>
+        <%= link ts.name, to: Routes.staff_teamset_path(@conn, :show, ts) %>
+        (<%= ts.id %>)
+      </td>
+      <td>
+        <%= show_teamset_assignments(ts) %>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

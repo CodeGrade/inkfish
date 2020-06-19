@@ -1,0 +1,10 @@
+<h1>Show Team</h1>
+
+<p>Members:</p>
+
+<ul>
+  <%= for reg <- @team.regs do %>
+    <li><%= user_display_name(reg.user) %></li>
+  <% end %>
+</ul>
+
