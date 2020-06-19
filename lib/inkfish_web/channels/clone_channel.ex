@@ -47,7 +47,7 @@ defmodule InkfishWeb.CloneChannel do
       data = %{
         status: status,
         results: "",
-        upload_id: nil
+        upload: nil
       }
       push(socket, "done", data)
     end

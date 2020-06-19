@@ -20,7 +20,7 @@ defmodule InkfishWeb.CloneChannelTest do
   test "clone clones a git repo", %{socket: socket} do
     pancake = "https://github.com/NatTuck/pancake.git"
     _ref = push socket, "clone", %{"url" => pancake}
-    assert_push "done", %{upload: _uuid}, 2_000
+    assert_push "done", %{status: "normal"}, 2_000
   end
 
   test "broadcasts are pushed to the client", %{socket: socket} do

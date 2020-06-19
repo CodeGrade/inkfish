@@ -16,6 +16,7 @@ defmodule Inkfish.Application do
       # Start the Endpoint (http/https)
       InkfishWeb.Endpoint,
       # Start a worker by calling: Inkfish.Worker.start_link(arg)
+      Inkfish.Itty.Sup,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

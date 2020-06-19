@@ -2,6 +2,7 @@ defmodule Inkfish.Uploads.Upload do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Inkfish.Sandbox
   alias Inkfish.Uploads.Photo
 
   @primary_key {:id, :binary_id, autogenerate: true}
