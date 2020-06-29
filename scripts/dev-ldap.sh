@@ -2,6 +2,7 @@
 
 LDIR=/tmp/inkfish/dev-ldap
 PIDF=$LDIR/slapd.pid
+CONF=./support/dev/dev-slapd.conf
 
 if [[ -e $PIDF ]]
 then
@@ -15,8 +16,8 @@ then
 fi
 
 mkdir -p $LDIR/data
-chmod 644 ./notes/dev-slapd.conf
+chmod 644 $CONF
 
-/usr/sbin/slapd -f ./notes/dev-slapd.conf -h ldap://localhost:3389
+/usr/sbin/slapd -f $CONF -h ldap://localhost:3389
 sleep 2
-ldapadd -h localhost:3389 -D cn=admin,dc=example,dc=com -w test -f ./test/test-data.ldif
+ldapadd -h localhost:3389 -D cn=admin,dc=example,dc=com -w test -f test/scripts/test-data.ldif

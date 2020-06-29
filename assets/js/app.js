@@ -3,29 +3,22 @@
 // its own CSS file.
 import css from "../css/app.scss";
 
-
 // webpack automatically bundles all modules in your
 // entry points. Those entry points can be configured
 // in "webpack.config.js".
 //
 // Import dependencies
-import "regenerator-runtime/runtime";
 import "phoenix_html";
-import jQuery from 'jquery';
-window.$ = jQuery;
-window.jQuery = jQuery;
-import "bootstrap/dist/js/bootstrap.bundle";
-import "bootstrap4-toggle";
-import "moment";
-import "jquery-datetimepicker";
+import "react-bootstrap";
 import feather from 'feather-icons';
+import $ from 'domtastic';
 
 // Import local files
 //
 // Local files can be imported directly using relative paths, for example:
 import socket from "./socket";
-import "./search";
 import "./uploads";
+import "./search";
 import "./grades/number-input";
 import "./code-view/init";
 import init_dates from "./human-date";
@@ -38,12 +31,13 @@ $(() => {
   init_autograde();
 
   init_dates();
-  init_date_time_pickers();
   init_teams();
   $('.toggle').bootstrapToggle();
   feather.replace();
 });
 
+/*
+  FIXME: handle date-time pickers
 function init_date_time_pickers() {
   $('.date-time-picker').datetimepicker({
     format: "Y-m-d H:i:59",
@@ -54,3 +48,4 @@ function init_date_time_pickers() {
     format: "Y-m-d",
   });
 }
+*/

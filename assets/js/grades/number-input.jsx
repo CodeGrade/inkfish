@@ -1,6 +1,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import $ from 'domtastic';
 import _ from 'lodash';
 
 let inputs = new Map();

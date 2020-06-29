@@ -1,8 +1,6 @@
 
-import _ from 'lodash';
-import $ from 'jquery';
-import 'dm-file-uploader';
-import uuid from 'uuid/v4';
+import $ from "domtastic";
+import uuid from "uuid/dist/v4";
 
 import socket from "./socket";
 

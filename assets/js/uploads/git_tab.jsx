@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { Card, Button, Alert, Row, Col, Label, Input } from 'reactstrap';
+import { Card, Button, Alert, Row, Col, Form } from 'react-bootstrap';
 import classnames from 'classnames';
 
 import * as ajax from '../ajax';
@@ -23,10 +23,12 @@ export default function GitTab({gotUpload, token, nonce}) {
     <Card body>
       <Row>
         <Col sm={2}>
-          <Label for="git-repo-url" className="col-form-label">Repo&nbsp;URL:</Label>
+          <Form.Label for="git-repo-url" className="col-form-label">
+            Repo&nbsp;URL:
+          </Form.Label>
         </Col>
         <Col sm={8} className="form-group">
-          <Input type="text" value={url} onChange={(ev) => setUrl(ev.target.value)}
+          <Form.Control type="text" value={url} onChange={(ev) => setUrl(ev.target.value)}
                  id="git-repo-url"
                  placeholder="https://github.com/YourName/repo.git" />
         </Col>

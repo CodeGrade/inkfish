@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Nav, NavItem, NavLink, TabPane,
-         TabContent, Card, Button, Alert } from 'reactstrap';
+         TabContent, Card, Button, Alert } from 'react-bootstrap';
 import classnames from 'classnames';
 
 import FileTab from './file_tab';

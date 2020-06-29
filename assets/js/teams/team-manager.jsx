@@ -1,9 +1,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import _ from 'lodash';
-import $ from 'jquery';
-import deepFreeze from 'deep-freeze';
+import $ from 'domtastic';
 
 export default function init() {
   let root = document.getElementById('team-manager');

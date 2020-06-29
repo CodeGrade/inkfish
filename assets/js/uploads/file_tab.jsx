@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import { Card, Button, Alert } from 'reactstrap';
+import { Card, Button, Alert } from 'react-bootstrap';
 import { useDropzone } from 'react-dropzone';
 import filesize from 'filesize';
 import classnames from 'classnames';

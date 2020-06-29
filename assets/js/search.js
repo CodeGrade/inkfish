@@ -1,6 +1,6 @@
 
-import $ from 'jquery';
-import _ from 'lodash';
+import $ from "domtastic";
+
 import socket from "./socket";
 
 function join_channel(topic) {
