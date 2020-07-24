@@ -11,12 +11,11 @@
   "dependencies": {
     "bootstrap-scss": "^4.5.0",
     "bootswatch": "^4.5.0",
+    "cash-dom": "^8.0.0",
     "classnames": "^2.2.6",
     "codemirror": "^5.55.0",
     "codemirror-mode-elixir": "^1.1.2",
     "date-fns": "^2.14.0",
-    "domready": "^1.0.8",
-    "domtastic": "^0.15.12",
     "feather-icons": "^4.28.0",
     "filesize": "^6.1.0",
     "icepick": "^2.4.0",

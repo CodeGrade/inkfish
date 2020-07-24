@@ -1,5 +1,5 @@
 
-import $ from "domtastic";
+import $ from "cash-dom";
 
 import socket from "./socket";
 

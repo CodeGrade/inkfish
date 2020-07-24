@@ -1,5 +1,5 @@
 
-import $ from 'domtastic';
+import $ from 'cash-dom';
 import CodeMirror from 'codemirror';
 import registerElixirMode from 'codemirror-mode-elixir';
 import 'codemirror/mode/markdown/markdown';

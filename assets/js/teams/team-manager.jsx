@@ -1,7 +1,6 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import $ from 'domtastic';
 
 export default function init() {
   let root = document.getElementById('team-manager');
@@ -54,7 +53,7 @@ class TeamManager extends React.Component {
       }
     };
 
-    $.ajax(window.create_team_path, {
+    fetch(window.create_team_path, {
       method: "post",
       dataType: "json",
       contentType: "application/json; charset=UTF-8",
@@ -75,7 +74,7 @@ class TeamManager extends React.Component {
     console.log("set active", team, active);
     let body = { team: { active: active } };
     let path = window.team_path_template.replace("ID", team.id);
-    $.ajax(path, {
+    fetch(path, {
       method: "patch",
       dataType: "json",
       contentType: "application/json; charset=UTF-8",

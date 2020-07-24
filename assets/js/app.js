@@ -11,7 +11,7 @@ import css from "../css/app.scss";
 import "phoenix_html";
 import "react-bootstrap";
 import feather from 'feather-icons';
-import $ from 'domtastic';
+import $ from 'cash-dom';
 
 // Import local files
 //
@@ -21,18 +21,17 @@ import "./uploads";
 import "./search";
 import "./grades/number-input";
 import "./code-view/init";
-import init_dates from "./human-date";
+import "./dates/init";
 import init_teams from "./teams/team-manager";
 import init_upload from "./uploads/upload";
 import init_autograde from './autograde';
 
-$(() => {
+$(document).ready(() => {
   init_upload('upload-root', 'sub_upload_id');
   init_autograde();
 
-  init_dates();
   init_teams();
-  $('.toggle').bootstrapToggle();
+  // FIXME: Set up toggle buttons
   feather.replace();
 });
 

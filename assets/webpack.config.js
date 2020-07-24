@@ -5,6 +5,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = (env, options) => {
   const devMode = options.mode !== 'production';
@@ -59,6 +60,7 @@ module.exports = (env, options) => {
         /moment[\/\\]locale$/,
         //
       ),
+      //new BundleAnalyzerPlugin(),
     ]
   }
 };

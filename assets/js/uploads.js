@@ -1,8 +1,8 @@
 
-import $ from "domtastic";
-import uuid from "uuid/dist/v4";
+import $ from 'cash-dom';
+import uuid from 'uuid/dist/v4';
 
-import socket from "./socket";
+import socket from './socket';
 
 function setup() {
   if (window.current_page == 'sub/new') {
