@@ -10,6 +10,15 @@ defmodule InkfishWeb.ViewHelpers do
   alias Inkfish.Grades.Grade
   alias Inkfish.Assignments.Assignment
   alias Inkfish.Teams.Team
+  alias Inkfish.LocalTime
+
+  def show_timestamp(ndt = %NaiveDateTime{}) do
+    show_timestamp(LocalTime.from_naive!(ndt))
+  end
+
+  def show_timestamp(dt = %DateTime{}) do
+    DateTime.to_iso8601(dt)
+  end
 
   def user_display_name(nil) do
     "(none)"
