@@ -4,15 +4,17 @@ defmodule InkfishWeb.UploadController do
   alias Inkfish.Uploads
   alias Inkfish.Uploads.Upload
 
-  defp check_token(conn, params = %{"token" => token}) do
+  def check_token(conn, params = %{"token" => token}) do
     case Phoenix.Token.verify(conn, "upload", token, max_age: 86400) do
-      {:ok, %{kind: kind}} ->
-        Map.put(params, "kind", kind)
-      _else ->
+      {:ok, %{kind: kind, nonce: nonce}} ->
+        params
+        |> Map.put("kind", kind)
+        |> Map.put("nonce", nonce)
+      other ->
         params
     end
   end
-  defp check_token(_conn, params), do: params
+  def check_token(_conn, params), do: params
 
   def create(conn, %{"upload" => upload_params}) do
     upload_params = check_token(conn, upload_params)

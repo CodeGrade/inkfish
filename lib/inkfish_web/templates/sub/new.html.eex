@@ -39,7 +39,13 @@
     </div>
   </div>
 
-    <div>
-      <%= submit "Submit", class: "btn btn-primary" %>
-    </div>
+  <div>
+    <%= submit "Submit", class: "btn btn-primary" %>
+  </div>
 <% end %>
+
+<div class="file-uploader"
+     data-upload-field="sub_upload_id"
+     data-token="<%= @token %>">
+  <p>File uploader loading...</p>
+</div>

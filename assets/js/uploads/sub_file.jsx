@@ -8,7 +8,7 @@ import FileTab from './file_tab';
 import GitTab from './git_tab';
 import * as history from '../console/history';
 
-export default function init_upload(root_id) {
+export default function init_sub_file(root_id) {
   let root = document.getElementById(root_id);
   if (root) {
     let topic = "clone:" + root.dataset.nonce;
@@ -23,13 +23,13 @@ export default function init_upload(root_id) {
       input.value = uuid;
     }
 
-    ReactDOM.render(<Upload allowGit={allowGit} allowFile={allowUpload}
-                            token={token} nonce={nonce}
-                            gotUploadId={gotUploadId} />, root);
+    ReactDOM.render(<SubFile allowGit={allowGit} allowFile={allowUpload}
+                             token={token} nonce={nonce}
+                             gotUploadId={gotUploadId} />, root);
   }
 }
 
-function Upload({allowGit, allowFile, gotUploadId, token, nonce}) {
+function SubFile({allowGit, allowFile, gotUploadId, token, nonce}) {
   let useTabs = allowGit && allowFile;
   const [upload, setUpload] = useState(null);
 
