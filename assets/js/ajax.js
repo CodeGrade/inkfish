@@ -29,23 +29,7 @@ export async function post(path, body) {
   return resp.json();
 }
 
-export async function upload_file(file, token) {
-  let body = new FormData();
-  body.append("upload[token]", token);
-  body.append("upload[upload]", file);
-  let resp = await fetch('/ajax/uploads', {
-    method: 'post',
-    credentials: 'same-origin',
-    headers: new Headers({
-      'x-csrf-token': window.csrf_token,
-      'accept': 'application/json',
-    }),
-    body: body,
-  });
-  return resp.json();
-}
-
-export function upload_file1(file, token, prog_fn) {
+export function upload_file(file, token, prog_fn) {
   let source = axios.CancelToken.source();
 
   let body = new FormData();

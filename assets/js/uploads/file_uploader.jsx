@@ -4,13 +4,9 @@ import { Card, Button } from 'react-bootstrap';
 import { useDropzone } from 'react-dropzone';
 import filesize from 'filesize';
 
-import { upload_file1 } from '../ajax';
+import { upload_file } from '../ajax';
 
-// TODO:
-//  - Implement upload with axios
-//  - Progress bar; canceling
-
-export default function FileUploader({token, uploadField}) {
+export default function FileUploader({token, onSuccess}) {
   const [file, set_file] = useState(null);
   const [resp, set_resp] = useState(null);
   const [prog, set_prog] = useState("0 / ??");
@@ -32,15 +28,21 @@ export default function FileUploader({token, uploadField}) {
     if (acceptedFiles.length > 0) {
       let file = acceptedFiles[0];
       set_file(file);
-      let [req, cancel_tok] = upload_file1(file, token, gotProgress);
+      let [req, cancel_tok] = upload_file(file, token, gotProgress);
       set_ctok(cancel_tok);
       req
         .then((info) => {
           console.log("upload complete", info);
           set_resp(info.data);
+          onSuccess(info.data.id);
         })
         .catch((ee) => {
-          set_prog("Failed: " + JSON.stringify(ee.response.data));
+          if (ee.response) {
+            set_prog("Failed: " + JSON.stringify(ee.response.data));
+          }
+          else {
+            set_prog("Failed: " + ee);
+          }
         });
     }
   }

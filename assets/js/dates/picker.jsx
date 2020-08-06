@@ -12,7 +12,7 @@ export function DateTimePicker(props) {
     <RDP
       selected={date}
       onChange={(dd) => setDate(dd)}
-      dateFormat="MMMM d, yyyy h:mm aa O"
+      dateFormat="yyyy-MM-dd kk:mm"
       showTimeSelect
       timeIntervals={60}
       injectTimes={[
