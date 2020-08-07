@@ -36,6 +36,7 @@ defmodule InkfishWeb.UploadController do
           kind: upload.kind,
           name: upload.name,
           path: Routes.upload_path(conn, :show, upload),
+          size: upload.size,
           id: upload.id,
         }
         conn

@@ -6,11 +6,6 @@ import FileUploader from './file_uploader';
 import TabbedUploader from './tabbed_uploader';
 import * as history from '../console/history';
 
-// TODO:
-//  * Figure out attribute flow to tabbed, file, and git uploaders.
-//  * Factor out clearing, including clearing target field.
-
-
 function render_uploader(Uploader, item) {
   let data = item.dataset;
   let field = data.uploadField;
@@ -27,7 +22,7 @@ function render_uploader(Uploader, item) {
   }
 
   ReactDOM.render(
-    <Uploader onSuccess={gotUUID} {...data} />,
+    <Uploader setUploadId={gotUUID} {...data} />,
     item);
 }
 

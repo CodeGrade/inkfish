@@ -4,9 +4,10 @@ import { Card, Button } from 'react-bootstrap';
 import { useDropzone } from 'react-dropzone';
 import filesize from 'filesize';
 
+import UploadInfo from './upload_info';
 import { upload_file } from '../ajax';
 
-export default function FileUploader({token, onSuccess}) {
+export default function FileUploader({token, setUploadId}) {
   const [file, set_file] = useState(null);
   const [resp, set_resp] = useState(null);
   const [prog, set_prog] = useState("0 / ??");
@@ -18,6 +19,7 @@ export default function FileUploader({token, onSuccess}) {
     }
     set_file(null);
     set_resp(null);
+    setUploadId("");
   }
 
   function gotProgress(info) {
@@ -34,7 +36,7 @@ export default function FileUploader({token, onSuccess}) {
         .then((info) => {
           console.log("upload complete", info);
           set_resp(info.data);
-          onSuccess(info.data.id);
+          setUploadId(info.data.id);
         })
         .catch((ee) => {
           if (ee.response) {
@@ -48,8 +50,8 @@ export default function FileUploader({token, onSuccess}) {
   }
 
   function clearFile() {
-    console.log("clear file");
     set_file(null);
+    setUploadId("");
   }
 
   const {getRootProps, getInputProps, open} = useDropzone({
@@ -61,19 +63,7 @@ export default function FileUploader({token, onSuccess}) {
 
   if (file && resp) {
     return (
-      <Card>
-        <Card.Body>
-          <p>
-            <b>File:</b> {file.path} - {filesize(file.size, {round: 0})}
-          </p>
-          <p>
-            UUID: { resp.id } &nbsp;
-            <Button variant="warning" onClick={clearFile}>
-              Clear
-            </Button>
-          </p>
-        </Card.Body>
-      </Card>
+      <UploadInfo upload={resp} clear={clearFile} />
     );
   }
 

@@ -7,25 +7,25 @@ import FileUploader from './file_uploader';
 import GitUploader from './git_uploader';
 import * as history from '../console/history';
 
-export default function TabbedUploader({allowGit, allowFile, onSuccess, token, nonce}) {
+export default function TabbedUploader({allowGit, allowFile, setUploadId, token, nonce}) {
   allowFile = (allowFile == "true");
   allowGit = (allowGit == "true");
 
   if (allowGit && allowFile) {
     return (
-      <UploadForms onSuccess={onSuccess} token={token} nonce={nonce} />
+      <UploadForms setUploadId={setUploadId} token={token} nonce={nonce} />
     );
   }
 
   if (allowFile) {
     return (
-      <FileUploader onSuccess={onSuccess} token={token} nonce={nonce} />
+      <FileUploader setUploadId={setUploadId} token={token} nonce={nonce} />
     );
   }
 
   if (allowGit) {
     return (
-      <GitUploader onSuccess={onSuccess} token={token} nonce={nonce} />
+      <GitUploader setUploadId={setUploadId} token={token} nonce={nonce} />
     );
   }
 
@@ -36,16 +36,16 @@ export default function TabbedUploader({allowGit, allowFile, onSuccess, token, n
   );
 }
 
-function UploadForms({onSuccess, token, nonce}) {
+function UploadForms({setUploadId, token, nonce}) {
   const [tab, setTab] = useState('file');
 
   return (
     <Tabs activeKey={tab} onSelect={(k) => setTab(k)}>
       <Tab eventKey="file" title="Upload File">
-        <FileUploader onSuccess={onSuccess} token={token} />
+        <FileUploader setUploadId={setUploadId} token={token} />
       </Tab>
       <Tab eventKey="git" title="Clone Git Repo">
-        <GitUploader onSuccess={onSuccess} token={token} nonce={nonce} />
+        <GitUploader setUploadId={setUploadId} token={token} nonce={nonce} />
       </Tab>
     </Tabs>
   );

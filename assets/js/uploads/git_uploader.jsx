@@ -6,7 +6,9 @@ import classnames from 'classnames';
 import * as history from '../console/history';
 import Console from '../console/console';
 
-export default function GitUploader({onSuccess, token, nonce}) {
+import UploadInfo from './upload_info';
+
+export default function GitUploader({setUploadId, token, nonce}) {
   const [url, setUrl] = useState("");
   const [upload, setUpload] = useState(null);
   const topic = "clone:" + nonce;
@@ -15,14 +17,14 @@ export default function GitUploader({onSuccess, token, nonce}) {
     history.done_hook(topic, (msg) => {
       console.log("done callback", msg);
       setUpload(msg.upload);
-      onSuccess(msg.upload.id);
+      setUploadId(msg.upload.id);
     });
     history.push(topic, "clone", {url});
   }
 
   if (upload) {
     return (
-      <UploadInfo upload={upload} setUpload={setUpload} />
+      <UploadInfo upload={upload} clear={() => setUpload("")} />
     );
   }
 
@@ -61,20 +63,3 @@ export default function GitUploader({onSuccess, token, nonce}) {
   );
 }
 
-function UploadInfo({upload, setUpload}) {
-  function clear(ev) {
-    ev.preventDefault();
-    setUpload(null);
-  }
-
-  return (
-    <Card body>
-      <p>
-        <b>Selected File</b>: {upload.name} &nbsp;
-        <Button color="danger" onClick={clear}>
-          Remove
-        </Button>
-      </p>
-    </Card>
-  );
-}
