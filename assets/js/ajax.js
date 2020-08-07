@@ -1,4 +1,5 @@
 
+import axios from 'axios';
 import { readAsArrayBuffer } from 'promise-file-reader';
 
 export async function get(path) {
@@ -28,18 +29,24 @@ export async function post(path, body) {
   return resp.json();
 }
 
-export async function upload_file(file, token) {
+export function upload_file(file, token, prog_fn) {
+  let source = axios.CancelToken.source();
+
   let body = new FormData();
   body.append("upload[token]", token);
   body.append("upload[upload]", file);
-  let resp = await fetch('/ajax/uploads', {
-    method: 'post',
-    credentials: 'same-origin',
-    headers: new Headers({
-      'x-csrf-token': window.csrf_token,
-      'accept': 'application/json',
-    }),
-    body: body,
-  });
-  return resp.json();
+
+  let req = axios({
+      method: 'post',
+      url: '/ajax/uploads',
+      data: body,
+      headers: {
+        'x-csrf-token': window.csrf_token,
+        'accept': 'application/json',
+      },
+      cancelToken: source.token,
+      onUploadProgress: prog_fn,
+    });
+
+  return [req, source];
 }

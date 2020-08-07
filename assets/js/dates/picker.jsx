@@ -6,15 +6,13 @@ import $ from 'cash-dom';
 import { setHours, setMinutes, addDays } from 'date-fns';
 
 
-
-
-export function DueDatePicker(props) {
+export function DateTimePicker(props) {
   const [date, setDate] = useState(props.defaultDate);
   return (
     <RDP
       selected={date}
       onChange={(dd) => setDate(dd)}
-      dateFormat="MMMM d, yyyy h:mm aa O"
+      dateFormat="yyyy-MM-dd kk:mm"
       showTimeSelect
       timeIntervals={60}
       injectTimes={[
@@ -27,9 +25,11 @@ export function DueDatePicker(props) {
 
 export function replace_date_picker(input) {
   let date0 = new Date();
+  let name = input.getAttribute("name");
 
   let elem = (
-    <DueDatePicker
+    <DatePicker
+      name={name}
       className="form-control"
       defaultDate={date0}
     />
@@ -38,7 +38,7 @@ export function replace_date_picker(input) {
   ReactDOM.render(elem, $(input).parent()[0])
 }
 
-export function StartDatePicker(props) {
+export function DatePicker(props) {
   return (
     <RDP
       selected={date}
@@ -50,8 +50,12 @@ export function StartDatePicker(props) {
 }
 
 export function replace_date_time_picker(input) {
+  let date0 = addDays(new Date(), 7);
+  let name = input.getAttribute("name");
+
   let elem = (
     <DateTimePicker
+      name={name}
       className="form-control"
       defaultDate={date0}
     />

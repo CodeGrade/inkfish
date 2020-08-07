@@ -21,7 +21,9 @@
 
   <li>
     <strong>Start date:</strong>
-    <%= @course.start_date %>
+    <span>
+      <%= @course.start_date %>
+    </span>
   </li>
 
   <li>
@@ -49,7 +51,7 @@
       <%= for aa <- bucket.assignments do %>
         <tr>
           <td><%= link aa.name, to: Routes.staff_assignment_path(@conn, :show, aa) %></td>
-          <td><%= aa.due %></td>
+          <td class="human-date"><%= show_timestamp(aa.due) %></td>
           <td><%= aa.weight %></td>
         </tr>
       <% end %>

@@ -31,8 +31,12 @@ defmodule InkfishWeb.CloneChannel do
       socket = if is_nil(socket.assigns[:upload_id]) do
         {:ok, upload} = Git.create_upload(
           results, socket.assigns[:kind], socket.assigns[:user_id])
-        socket
-        |> assign(:upload, %{"id" => upload.id, "name" => upload.name})
+        upinfo = %{
+          "id" => upload.id,
+          "name" => upload.name,
+          "size" => upload.size,
+        }
+        assign(socket, :upload, upinfo)
       else
         socket
       end

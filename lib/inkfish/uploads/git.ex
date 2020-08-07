@@ -37,6 +37,7 @@ defmodule Inkfish.Uploads.Git do
 
     File.cp!(tar, Upload.upload_path(upload))
     File.cp_r!(dir, Upload.unpacked_path(upload))
-    {:ok, upload}
+
+    {:ok, Upload.fetch_size(upload)}
   end
 end

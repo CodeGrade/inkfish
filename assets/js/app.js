@@ -8,6 +8,9 @@ import css from "../css/app.scss";
 // in "webpack.config.js".
 //
 // Import dependencies
+import "regenerator-runtime/runtime";
+import "core-js/stable";
+
 import "phoenix_html";
 import "react-bootstrap";
 import feather from 'feather-icons';
@@ -22,29 +25,17 @@ import "./search";
 import "./grades/number-input";
 import "./code-view/init";
 import "./dates/init";
+import "./uploads/init";
 import init_teams from "./teams/team-manager";
-import init_upload from "./uploads/upload";
+//import init_sub_file from "./uploads/sub_file";
 import init_autograde from './autograde';
 
-$(document).ready(() => {
-  init_upload('upload-root', 'sub_upload_id');
+function app_init() {
+  //init_sub_file('upload-root', 'sub_upload_id');
   init_autograde();
 
   init_teams();
-  // FIXME: Set up toggle buttons
   feather.replace();
-});
-
-/*
-  FIXME: handle date-time pickers
-function init_date_time_pickers() {
-  $('.date-time-picker').datetimepicker({
-    format: "Y-m-d H:i:59",
-    allowTimes: ["3:59", "7:59", "11:59", "15:59", "19:59", "23:59"],
-  });
-  $('.date-picker').datetimepicker({
-    timepicker: false,
-    format: "Y-m-d",
-  });
 }
-*/
+
+$(app_init);

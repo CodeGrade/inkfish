@@ -24,6 +24,7 @@ defmodule Inkfish.Uploads.Upload do
     has_many :subs, Inkfish.Subs.Sub
 
     field :upload, :any, virtual: true
+    field :size, :any, virtual: true
 
     timestamps()
   end
@@ -80,11 +81,11 @@ defmodule Inkfish.Uploads.Upload do
   def validate_file_size(%Ecto.Changeset{} = cset) do
     upload = get_field(cset, :upload)
     if upload do
-      {:ok, stat} = File.stat(upload.path)
-      if stat.size > 10_485_760 do
+      size = file_size(upload.path)
+      if size > 10_485_760 do
         add_error(cset, :upload, "uploaded file is too big")
       else
-        cset
+        put_change(cset, :size, size)
       end
     else
       cset
@@ -160,5 +161,15 @@ defmodule Inkfish.Uploads.Upload do
 
   def upload_url(host, upload) do
     "#{host}/uploads/#{upload.id}/#{upload.name}"
+  end
+
+  def fetch_size(upload) do
+    size = file_size(upload_path(upload))
+    %{upload | size: size}
+  end
+
+  def file_size(path) do
+    info = File.stat!(path)
+    info.size
   end
 end

@@ -60,7 +60,7 @@ defmodule Inkfish.Uploads do
         Upload.save_upload_file!(cset, upload)
         Upload.unpack(upload)
         clean_uploads()
-        {:ok, upload}
+        {:ok, Upload.fetch_size(upload)}
       error ->
         error
     end

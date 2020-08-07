@@ -16,7 +16,7 @@
   <li>
     <strong>Due:</strong>
     <span class="human-date">
-      <%= @assignment.due %>
+      <%= show_timestamp(@assignment.due) %>
     </span>
   </li>
 

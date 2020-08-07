@@ -13,7 +13,7 @@
 <%= for course <- @courses do %>
     <tr>
       <td><%= link course.name, to: Routes.staff_course_path(@conn, :show, course) %></td>
-      <td><%= course.start_date %></td>
+      <td class="human-date"><%= course.start_date %></td>
     </tr>
 <% end %>
   </tbody>
