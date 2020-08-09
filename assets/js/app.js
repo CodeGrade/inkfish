@@ -13,7 +13,6 @@ import "core-js/stable";
 
 import "phoenix_html";
 import "react-bootstrap";
-import feather from 'feather-icons';
 import $ from 'cash-dom';
 
 // Import local files
@@ -27,15 +26,11 @@ import "./code-view/init";
 import "./dates/init";
 import "./uploads/init";
 import init_teams from "./teams/team-manager";
-//import init_sub_file from "./uploads/sub_file";
 import init_autograde from './autograde';
 
 function app_init() {
-  //init_sub_file('upload-root', 'sub_upload_id');
   init_autograde();
-
   init_teams();
-  feather.replace();
 }
 
 $(app_init);

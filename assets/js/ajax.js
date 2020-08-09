@@ -15,9 +15,9 @@ export async function get(path) {
   return resp.json;
 }
 
-export async function post(path, body) {
+export async function mutate(method, path, body) {
   let resp = await fetch('/ajax' + path, {
-    method: 'post',
+    method: method,
     credentials: 'same-origin',
     headers: new Headers({
       'x-csrf-token': window.csrf_token,
@@ -27,6 +27,10 @@ export async function post(path, body) {
     body: JSON.stringify(body),
   });
   return resp.json();
+}
+
+export async function post(path, body) {
+  return mutate('post', path, body);
 }
 
 export function upload_file(file, token, prog_fn) {
@@ -49,4 +53,35 @@ export function upload_file(file, token, prog_fn) {
     });
 
   return [req, source];
+}
+
+export function create_line_comment(grade_id, path, line) {
+  console.log("create comment", grade_id, path, line);
+  let post_path = `/staff/grades/${grade_id}/line_comments`;
+  let body = {
+    line_comment: {
+      grade_id: grade_id,
+      path: path,
+      line: line,
+      text: "",
+      points: "0",
+    },
+  };
+  return post(post_path, body);
+}
+
+export function update_line_comment(lc_id, points, text) {
+  let path = "/staff/line_comments/" + lc_id;
+  let body = {
+    line_comment: {
+      points: points,
+      text: text,
+    }
+  };
+  return mutate('PATCH', path, body);
+}
+
+export function delete_line_comment(lc_id) {
+  let path = "/staff/line_comments/" + lc_id;
+  return mutate('DELETE', path, {});
 }

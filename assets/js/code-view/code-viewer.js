@@ -1,5 +1,6 @@
 
 import $ from 'cash-dom';
+import _ from 'lodash';
 import CodeMirror from 'codemirror';
 import registerElixirMode from 'codemirror-mode-elixir';
 import 'codemirror/mode/markdown/markdown';

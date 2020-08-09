@@ -83,9 +83,10 @@ defmodule InkfishWeb.SubController do
   def files(conn, %{"id" => id}) do
     sub = Subs.get_sub!(id)
     sub_data = InkfishWeb.SubView.render("sub.json", %{sub: sub})
+    gcol = %{ points: 0 }
     data = Inkfish.Subs.read_sub_data(sub.id)
     |> Map.put(:edit, false)
-    |> Map.put(:grade, %{line_comments: [], sub: sub_data})
+    |> Map.put(:grade, %{line_comments: [], sub: sub_data, grade_column: gcol})
     render(conn, "files.html", sub: sub, data: data)
   end
 end
