@@ -5,23 +5,32 @@ import { AlertTriangle, Check, Save, Trash } from 'react-feather';
 
 import { delete_line_comment, update_line_comment} from '../ajax';
 
-export default function LineComment({data, setGrade}) {
+export default function LineComment({data, setGrade, edit}) {
   const [points, setPoints] = useState(data.points);
   const [text, setText] = useState(data.text);
   const [status, setStatus] = useState(null);
+
+  console.log("edit", edit);
 
   let color = line_comment_color(points);
   let icons = [];
 
   if (status) {
     if (status == "ok") {
-      icons.push(<Check />);
+      // TODO: Make this actually display.
+      console.log("check icon");
+      icons.push(<Check key="ok" />);
     }
     else {
-      icons.push(<AlertTriangle />);
+      // TODO: Show error message.
+      console.log("alert icon");
+      icons.push(<AlertTriangle key="err" />);
     }
   }
 
+  function clearStatus() {
+    window.setTimeout(() => setStatus(null), 5);
+  }
 
   function handle_enter(ev) {
     if (ev.which == 13) {
@@ -30,12 +39,19 @@ export default function LineComment({data, setGrade}) {
     }
   }
 
+
   function save_comment(ev) {
     ev.preventDefault();
     update_line_comment(data.id, points, text)
       .then((resp) => {
         console.log("update resp", resp);
+        setStatus("ok");
         setGrade(resp.data.grade);
+      })
+      .catch((resp) => {
+        let msg = JSON.stringify(resp);
+        setStatus(msg);
+        console.log("error saving", msg);
       });
   }
 
@@ -48,6 +64,25 @@ export default function LineComment({data, setGrade}) {
       });
   }
 
+  function Buttons({edit}) {
+    if (edit) {
+      return (
+        <span>
+          <Button variant="success"
+                  disabled={points == data.points && text == data.text}>
+            <Save onClick={save_comment} />
+          </Button>
+          <Button variant="danger">
+            <Trash onClick={delete_comment} />
+          </Button>
+        </span>
+      );
+    }
+    else {
+      return (<span />);
+    }
+  }
+
   return (
     <Card className="comment-card">
       <Card.Body className={color}>
@@ -57,13 +92,8 @@ export default function LineComment({data, setGrade}) {
           </Col>
           <Col sm={3} className="text-right">
             { icons }
-            <Button variant="success"
-                    disabled={points == data.points && text == data.text}>
-              <Save onClick={save_comment} />
-            </Button>
-            <Button variant="danger">
-              <Trash onClick={delete_comment} />
-            </Button>
+            &nbsp;
+            <Buttons edit={edit} />
           </Col>
         </Row>
         <Row>
@@ -71,13 +101,21 @@ export default function LineComment({data, setGrade}) {
             <Form.Control type="number"
                           onKeyPress={handle_enter}
                           value={points}
-                          onChange={(ev) => setPoints(ev.target.value)} />
+                          disabled={!edit}
+                          onChange={(ev) => {
+                            setPoints(ev.target.value);
+                            clearStatus();
+                          }} />
           </Col>
           <Col sm={10}>
             <Form.Control as="textarea"
                           rows="3"
                           value={text}
-                          onChange={(ev) => setText(ev.target.value)} />
+                          disabled={!edit}
+                          onChange={(ev) => {
+                            setText(ev.target.value);
+                            clearStatus();
+                          }} />
           </Col>
         </Row>
       </Card.Body>

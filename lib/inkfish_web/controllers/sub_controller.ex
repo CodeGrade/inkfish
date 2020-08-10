@@ -25,8 +25,7 @@ defmodule InkfishWeb.SubController do
     asg = conn.assigns[:assignment]
     reg = conn.assigns[:current_reg]
     team = Teams.get_active_team(asg, reg)
-    nonce = Base.encode16(:crypto.strong_rand_bytes(32))
-    token = Phoenix.Token.sign(conn, "upload", %{kind: "sub", nonce: nonce})
+    %{nonce: nonce, token: token} = upload_token(conn, "sub")
 
     if team do
       changeset = Subs.change_sub(%Sub{})

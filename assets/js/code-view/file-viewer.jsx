@@ -18,9 +18,6 @@ import LineComment from './line-comment';
 
 import { create_line_comment } from '../ajax';
 
-// TODO:
-//  - Port over line comment widget from old version.
-
 export default function FileViewer({path, data, grade, setGrade}) {
   const texts = useMemo(() => build_texts_map(data.files), [data.files]);
   const editor = useRef(null);
@@ -59,7 +56,7 @@ export default function FileViewer({path, data, grade, setGrade}) {
       lc_div.setAttribute('id', `line-comment-${lc.id}`);
       let node = cm.addLineWidget(lc.line, lc_div, {above: true});
       ReactDOM.render(
-        <LineComment data={lc} setGrade={setGrade} />,
+        <LineComment data={lc} setGrade={setGrade} edit={data.edit}/>,
         lc_div
       );
     }

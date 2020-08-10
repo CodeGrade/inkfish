@@ -16,8 +16,10 @@ export default function FileTree({data, grade, activePath, pickFile}) {
     }
   }
 
+  let dirs = list_top_dirs(data.files);
+
   let grade_info = null;
-  if (data.edit) {
+  if (data.grade.id) {
       grade_info = <GradeInfo grade={grade} />;
   }
 
@@ -27,7 +29,7 @@ export default function FileTree({data, grade, activePath, pickFile}) {
       <TreeMenu
         data={[data.files]}
         debounceTime={5}
-        initialOpenNodes={[]}>
+        initialOpenNodes={dirs}>
         {({_search, items}) => (
           <ListGroup>
             {items.map((props) => (
@@ -70,6 +72,10 @@ function GradeInfo({grade}) {
 
 function list_top_dirs(data) {
   if (data.type != "directory") {
+    return [];
+  }
+
+  if (data.key.match(/^\.git/)) {
     return [];
   }
 
@@ -116,7 +122,6 @@ function DirListItem(props) {
   };
 
   return (
-    //<ListGroupItem className="d-flex justify-content-between align-items-center">
     <ListGroupItem active={props.active}>
       <span className="tree-toggle">
         <a href="#" onClick={toggle}>

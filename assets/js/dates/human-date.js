@@ -25,10 +25,11 @@ function show_date(text) {
 function init_dates() {
   $('.human-date').each((_ii, elem) => {
     let text = elem.innerText;
+    console.log("human-date", elem, text);
     let show = show_date(text);
     elem.innerText = show;
     $(elem).removeClass('human-date');
-    console.log("replaced", text, "with", show);
+    //console.log("replaced", text, "with", show);
   });
 }
 

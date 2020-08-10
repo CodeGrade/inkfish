@@ -31,7 +31,10 @@ defmodule InkfishWeb.Staff.AssignmentController do
       allow_git: false,
     }
     changeset = Assignments.change_assignment(as)
-    render(conn, "new.html", changeset: changeset, teamsets: teamsets)
+    sta_tok = upload_token(conn, "assignment_starter")
+    sol_tok = upload_token(conn, "assignment_solution")
+    render(conn, "new.html", changeset: changeset, teamsets: teamsets,
+      sta_tok: sta_tok, sol_tok: sol_tok)
   end
 
   def create(conn, %{"assignment" => assignment_params}) do
@@ -57,8 +60,11 @@ defmodule InkfishWeb.Staff.AssignmentController do
     assignment = Assignments.get_assignment!(id)
     changeset = Assignments.change_assignment(assignment)
     teamsets = Inkfish.Teams.list_teamsets(conn.assigns[:course])
+    sta_tok = upload_token(conn, "assignment_starter")
+    sol_tok = upload_token(conn, "assignment_solution")
     render(conn, "edit.html", assignment: assignment,
-      changeset: changeset, teamsets: teamsets)
+      changeset: changeset, teamsets: teamsets,
+      sta_tok: sta_tok, sol_tok: sol_tok)
   end
 
   def update(conn, %{"id" => id, "assignment" => assignment_params}) do
