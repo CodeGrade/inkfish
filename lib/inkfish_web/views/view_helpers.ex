@@ -12,6 +12,15 @@ defmodule InkfishWeb.ViewHelpers do
   alias Inkfish.Teams.Team
   alias Inkfish.LocalTime
 
+  def upload_token(conn, kind) do
+    nonce = Base.encode16(:crypto.strong_rand_bytes(32))
+    token = Phoenix.Token.sign(conn, "upload", %{kind: kind, nonce: nonce})
+    %{
+      nonce: nonce,
+      token: token,
+    }
+  end
+
   def show_timestamp(ndt = %NaiveDateTime{}) do
     show_timestamp(LocalTime.from_naive!(ndt))
   end
@@ -191,33 +200,23 @@ defmodule InkfishWeb.ViewHelpers do
     end
   end
 
-  def ajax_upload_field(kind, exts, target) do
-    ~s(<div class="upload-drop-area" data-exts="#{exts}" data-kind="#{kind}"
-         data-id-field="#{target}">
-         <p class="text-muted">Drag here to upload.</p>
-         <div class="row">
-           <div class="col-md upload-input">
-             <label class="btn btn-secondary btn-file">
-               Browse...
-               <input type="file" name="_#{target}" style="display: none">
-             </label>
-           </div>
-           <div class="col-md">
-             <button class="upload-clear-button btn btn-danger">Clear Upload</button>
-           </div>
-         </div>
-         <div class="row">
-           <div class="col">
-             <p class="message m-2"></p>
-             <div class="progress m-2" style="">
-               <div class="progress-bar progress-bar-striped progress-bar-animated p-1">
-                 0%
-               </div>
-             </div>
-           </div>
-         </div>
-       </div>)
-    |> raw
+  def ajax_upload_field(kind, _exts, target) do
+    ajax_upload_field(kind, target)
+  end
+
+  def ajax_upload_field(kind, target) do
+    %{nonce: nonce, token: token} = upload_token(InkfishWeb.Endpoint, kind)
+
+    code = ~s(
+      <div class="file-uploader"
+           data-upload-field="#{target}"
+           data-nonce="#{nonce}"
+           data-token="#{token}">
+        React loading...
+      </div>
+    )
+
+    raw(code)
   end
 
   def render_autograde_log(items) do

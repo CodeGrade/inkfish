@@ -2,11 +2,8 @@
 
 @import "~bootstrap-scss/bootstrap";
 @import "~bootswatch/dist/spacelab/bootswatch";
-/*
-@import "~bootstrap4-toggle/css/bootstrap4-toggle.min";
 @import "~codemirror/lib/codemirror";
-@import "~jquery-datetimepicker/jquery.datetimepicker";
-
+/*
 @import "./dropzone";
 @import "./console";
 */
@@ -105,7 +102,8 @@
 }
 
 .CodeMirror {
-    height: 90%;
+    height: 90vh;
+    max-height: 90vh;
 }
 
 .comment-card {

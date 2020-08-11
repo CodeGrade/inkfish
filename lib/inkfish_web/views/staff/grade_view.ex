@@ -8,6 +8,7 @@ defmodule InkfishWeb.Staff.GradeView do
     sub = get_assoc(grade, :sub)
 
     %{
+      id: grade.id,
       score: grade.score,
       sub_id: grade.sub_id,
       sub: render_one(sub, InkfishWeb.Staff.SubView, "sub.json"),

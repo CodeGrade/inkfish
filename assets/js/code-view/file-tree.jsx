@@ -1,96 +1,48 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TreeMenu, {defaultChildren} from 'react-simple-tree-menu';
+import TreeMenu, { defaultChildren } from 'react-simple-tree-menu';
 import { ListGroup, ListGroupItem, Input } from 'react-bootstrap';
-import viewer from './code-viewer';
+import { freeze } from 'icepick';
 
-export default function init_view() {
-  let root = document.getElementById('code-file-tree');
-  if (root) {
-    ReactDOM.render(<FileTree data={window.code_view_data} />, root);
-  }
-}
-
-class FileTree extends React.Component {
-  constructor(props) {
-    super(props);
-    viewer.set_grade_callback(this.update_grade.bind(this));
-
-    let dirs = list_top_dirs(props.data.files);
-    let grade = props.data.grade;
-
-    console.log(grade);
-
-    this.state = deepFreeze({
-      sub_id: props.data.sub_id,
-      grade_id: props.data.grade_id,
-      files: props.data.files,
-      active: "[root]",
-      dirs: dirs,
-      grade: grade,
-    });
-  }
-
-  update_grade(grade) {
-    console.log("update_grade", grade);
-
-    this.setState(deepFreeze({
-      ...this.state,
-      grade: grade,
-    }));
-  }
-
-  pick_file(ev, props) {
-    ev.preventDefault();
-    viewer.set_file(props);
-    this.setState(deepFreeze({
-      ...this.state,
-      active: props.path,
-    }));
-  }
-
-  render() {
-    let comment_counts = new Map();
-    for (let lc of this.state.grade.line_comments) {
-      if (comment_counts.has(lc.path)) {
-        let count = comment_counts.get(lc.path);
-        comment_counts.set(lc.path, count + 1);
-      }
-      else {
-        comment_counts.set(lc.path, 1);
-      }
+export default function FileTree({data, grade, activePath, pickFile}) {
+  let comment_counts = new Map();
+  for (let lc of grade.line_comments) {
+    if (comment_counts.has(lc.path)) {
+      let count = comment_counts.get(lc.path);
+      comment_counts.set(lc.path, count + 1);
     }
-
-    let grade_info = "";
-    if (this.state.grade.grade_column) {
-        grade_info = <GradeInfo grade={this.state.grade} />;
+    else {
+      comment_counts.set(lc.path, 1);
     }
-
-    return (
-      <div>
-        {grade_info}
-        <TreeMenu
-          data={[this.state.files]}
-          onClickItem={({...props}) => this.pick_file(props)}
-          debounceTime={5}
-          initialOpenNodes={this.state.dirs}>
-          {({_search, items}) => (
-            <ListGroup>
-              {items.map((props) => {
-                return (
-                  <ListItem {...props}
-                            comment_counts={comment_counts}
-                            active={props.label == this.state.active}
-                            onClickLabel={(ev) => this.pick_file(ev, props)}/>
-                );
-              })}
-            </ListGroup>
-          )}
-        </TreeMenu>
-      </div>
-    );
   }
+
+  let dirs = list_top_dirs(data.files);
+
+  let grade_info = null;
+  if (data.grade.id) {
+      grade_info = <GradeInfo grade={grade} />;
+  }
+
+  return (
+    <div className="h-100">
+      { grade_info }
+      <TreeMenu
+        data={[data.files]}
+        debounceTime={5}
+        initialOpenNodes={dirs}>
+        {({_search, items}) => (
+          <ListGroup>
+            {items.map((props) => (
+              <ListItem {...props}
+                        comment_counts={comment_counts}
+                        active={props.label == activePath}
+                        onClickLabel={(ev) => pickFile(ev, props)}/>
+            ))}
+          </ListGroup>
+        )}
+      </TreeMenu>
+    </div>
+  );
 }
 
 function GradeInfo({grade}) {
@@ -120,6 +72,10 @@ function GradeInfo({grade}) {
 
 function list_top_dirs(data) {
   if (data.type != "directory") {
+    return [];
+  }
+
+  if (data.key.match(/^\.git/)) {
     return [];
   }
 
@@ -166,7 +122,6 @@ function DirListItem(props) {
   };
 
   return (
-    //<ListGroupItem className="d-flex justify-content-between align-items-center">
     <ListGroupItem active={props.active}>
       <span className="tree-toggle">
         <a href="#" onClick={toggle}>

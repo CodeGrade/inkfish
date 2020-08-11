@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 import RDP from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import $ from 'cash-dom';
-import { setHours, setMinutes, addDays } from 'date-fns';
-
+import { setHours, setMinutes, setSeconds, parse } from 'date-fns';
 
 export function DateTimePicker(props) {
   const [date, setDate] = useState(props.defaultDate);
@@ -16,7 +15,7 @@ export function DateTimePicker(props) {
       showTimeSelect
       timeIntervals={60}
       injectTimes={[
-        make_time(23, 59),
+        make_time(23, 59, 59),
       ]}
       {...props}
     />
@@ -50,7 +49,7 @@ export function DatePicker(props) {
 }
 
 export function replace_date_time_picker(input) {
-  let date0 = addDays(new Date(), 7);
+  let date0 = parse(input.value, "yyyy-MM-dd kk:mm:ss", new Date());
   let name = input.getAttribute("name");
 
   let elem = (
@@ -63,10 +62,10 @@ export function replace_date_time_picker(input) {
   ReactDOM.render(elem, $(input).parent()[0])
 }
 
-function set_time(dd, hh, mm) {
-  return setHours(setMinutes(dd, mm), hh);
+function set_time(dd, hh, mm, ss) {
+  return setHours(setMinutes(setSeconds(dd, ss), mm), hh);
 }
 
-function make_time(hh, mm) {
-  return set_time(new Date(), hh, mm);
+function make_time(hh, mm, ss) {
+  return set_time(new Date(), hh, mm, ss);
 }
