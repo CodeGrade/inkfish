@@ -10,8 +10,6 @@ export default function LineComment({data, setGrade, edit}) {
   const [text, setText] = useState(data.text);
   const [status, setStatus] = useState(null);
 
-  console.log("edit", edit);
-
   let color = line_comment_color(points);
   let icons = [];
 
