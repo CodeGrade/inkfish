@@ -3,6 +3,7 @@ defmodule Inkfish.Container do
   alias Inkfish.Container.Queue
   alias Inkfish.Container.Job
 
+  alias Inkfish.Subs
   alias Inkfish.Subs.Sub
   alias Inkfish.Grades
   alias Inkfish.Grades.Grade
@@ -43,6 +44,16 @@ defmodule Inkfish.Container do
         GRA: Upload.upload_url(grade.grade_column.upload),
       },
     }
-    Queue.add(job)
+    Queue.add(job, &container_done/2)
+  end
+
+  def container_done(job, tap) do
+    grade = Grades.get_grade_by_log_uuid(job.uuid)
+    {:ok, {passed, total}} = Inkfish.Container.Tap.score(tap)
+    score = passed
+    |> Decimal.div(total)
+    |> Decimal.mult(grade.grade_column.points)
+    {:ok, _} = Grades.update_grade(grade, %{score: score})
+    {:ok, _} = Subs.calc_sub_score!(grade.sub_id)
   end
 end

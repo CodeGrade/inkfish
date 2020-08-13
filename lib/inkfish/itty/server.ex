@@ -83,6 +83,8 @@ defmodule Inkfish.Itty.Server do
       {to_charlist(to_string(kk)), to_charlist(vv)}
     end)
 
+    IO.inspect({:env, env})
+
     cmd
     |> to_charlist()
     |> :exec.run([{:env, env}, {:stdout, self()}, {:stderr, self()}, :monitor])

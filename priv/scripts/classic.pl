@@ -24,7 +24,7 @@ my @FLAGS = (
     "-m $MEM",
 );
 
-for my $var (qw(SUB GRA)) {
+for my $var (qw(SUB GRA COOKIE)) {
     my $vv = $ENV{$var} or die "Must specify $var";
     push @FLAGS, qq{--env "$var=$vv"};
 }

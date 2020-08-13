@@ -32,8 +32,8 @@ defmodule Inkfish.Container.Queue do
     GenServer.call(@name, :list)
   end
 
-  def add(job) do
-    GenServer.call(@name, {:add, job})
+  def add(job, on_exit) do
+    GenServer.call(@name, {:add, job, on_exit})
   end
 
   def next() do
@@ -76,13 +76,17 @@ defmodule Inkfish.Container.Queue do
     {:reply, jobs, state}
   end
 
-  def handle_call({:add, job}, _from, state0) do
+  def handle_call({:add, job, on_exit}, _from, state0) do
     job = job
     |> Map.put(:state, :ready)
 
     jobs = Map.put(state0.jobs, job.key, job)
 
-    :ok = Itty.start(job.uuid)
+    callback = fn tap ->
+      on_exit.(job, tap)
+    end
+
+    :ok = Itty.start(job.uuid, callback)
 
     state1 = %{
       jobs: jobs,
@@ -113,7 +117,7 @@ defmodule Inkfish.Container.Queue do
     job = Map.get(state0.jobs, key)
     job = %Job{job | state: :done, output: output, status: status}
 
-    IO.inspect({:container_done, job})
+    #IO.inspect({:container_done, job})
 
     state1 = put_in(state0, [:jobs, key], job)
     {:reply, job, state1}

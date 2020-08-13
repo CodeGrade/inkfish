@@ -14,7 +14,7 @@ defmodule Inkfish.Itty do
   end
 
   def start(uuid, on_exit) do
-    Server.start(on_exit)
+    Server.start(uuid, on_exit)
   end
 
   def null_fn(_) do
