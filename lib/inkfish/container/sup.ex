@@ -1,4 +1,4 @@
-defmodule Inkfish.Autograde.Sup do
+defmodule Inkfish.Container.Sup do
   use DynamicSupervisor
 
   def start_link(arg) do

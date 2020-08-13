@@ -7,7 +7,7 @@ defmodule Inkfish.Grades do
   alias Inkfish.Repo
 
   alias Inkfish.Grades.GradeColumn
-  alias Inkfish.Autograde
+  alias Inkfish.Container
 
   @doc """
   Returns the list of grade_columns.
@@ -251,13 +251,17 @@ defmodule Inkfish.Grades do
   end
 
   def create_autograde(sub_id, gcol_id) do
+    uuid = Inkfish.Text.gen_uuid()
     attrs = %{
       grade_column_id: gcol_id,
       sub_id: sub_id,
+      log_uuid: uuid,
     }
     {:ok, grade} = create_grade(attrs)
-    {:ok, uuid} = Autograde.start(grade.id)
-    update_grade(grade, %{log_uuid: uuid})
+
+    grade = get_grade_for_autograding!(grade.id)
+
+    :ok = Container.enqueue(grade)
   end
 
 

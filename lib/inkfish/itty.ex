@@ -2,22 +2,31 @@ defmodule Inkfish.Itty do
   alias Inkfish.Itty.Server
 
   @doc """
-  Returns {:ok, uuid}
+  Returns ???
   """
-  def start(cmd) do
-    Server.start(cmd, [], &null_fn/1)
+  def start() do
+    uuid = Inkfish.Text.gen_uuid()
+    start(uuid)
   end
 
-  def start(cmd, env) do
-    Server.start(cmd, env, &null_fn/1)
+  def start(uuid) do
+    Server.start(uuid, &null_fn/1)
   end
 
-  def start(cmd, env, on_exit) do
-    Server.start(cmd, env, on_exit)
+  def start(uuid, on_exit) do
+    Server.start(on_exit)
   end
 
-  defp null_fn(_) do
+  def null_fn(_) do
     :ok
+  end
+
+  def run(uuid, cmd, env) do
+    Server.run(uuid, cmd, env)
+  end
+
+  def echo(uuid, msg) do
+    Server.echo(uuid, msg)
   end
 
   @doc """

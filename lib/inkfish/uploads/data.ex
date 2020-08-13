@@ -1,4 +1,5 @@
 defmodule Inkfish.Uploads.Data do
+  import Inkfish.Text, only: [corrupt_invalid_utf8: 1]
   alias Inkfish.Uploads.Upload
 
   def read_data(%Upload{} = upload) do
@@ -115,7 +116,7 @@ defmodule Inkfish.Uploads.Data do
     path = Path.join(base, rel)
     if info[:mode] && text_file?(path) do
       text = File.read!(path)
-      Map.put(info, :text, sanitize_utf8(text))
+      Map.put(info, :text, corrupt_invalid_utf8(text))
     else
       info
     end
@@ -124,12 +125,5 @@ defmodule Inkfish.Uploads.Data do
   def text_file?(path) do
     {type, 0} = System.cmd("file", ["-ib", path])
     type =~ ~r/^text/i || type =~ ~r/ASCII/
-  end
-
-  def sanitize_utf8(text) do
-    text
-    |> String.codepoints
-    |> Enum.filter(&String.valid?/1)
-    |> Enum.join("")
   end
 end

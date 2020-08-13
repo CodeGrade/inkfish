@@ -143,7 +143,7 @@ defmodule Inkfish.Subs do
 
     Enum.each asg.grade_columns, fn gcol ->
       if gcol.kind == "script" do
-        {:ok, _grade} = Grades.create_autograde(sub.id, gcol.id)
+        :ok = Grades.create_autograde(sub.id, gcol.id)
       end
     end
   end

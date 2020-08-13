@@ -1,0 +1,18 @@
+FROM <%= base %>
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN adduser student --disabled-password --gecos "Student,,,,"
+
+RUN apt-get -y update && apt-get -y upgrade
+RUN apt-get -y install apt-utils debian-goodies util-linux \
+    build-essential perl-doc libipc-run-perl libarchive-zip-perl \
+    wamerican libbsd-dev ruby python3 pkg-config time curl
+<%= for package <- packages do %>
+RUN apt-get -y install <%= package %>
+<% end %>
+
+<%= for cmd <- user_commands do %>
+RUN su - student -c "<%= cmd %>"
+<% end %>
+
+COPY driver.pl /var/tmp/driver.pl

@@ -9,14 +9,7 @@ defmodule InkfishWeb.AutogradeChannel do
         socket = socket
         |> assign(:uuid, uuid)
 
-        {:ok, %{output: output, exit: exit}} = Inkfish.Itty.open(uuid)
-        Enum.each output, fn item ->
-          send(self(), {:output, item})
-        end
-
-        if exit do
-          send(self(), {:exit, exit})
-        end
+        Process.send_after(self(), :open, 10)
 
         {:ok, socket}
       failure ->
@@ -43,6 +36,23 @@ defmodule InkfishWeb.AutogradeChannel do
     push(socket, "output", data)
 
     Process.send_after(self(), :show_score, 1_000)
+  end
+
+  def handle_info(:open, socket) do
+    case Inkfish.Itty.open(socket.assigns[:uuid]) do
+      {:ok, %{output: output, exit: exit}} ->
+        Enum.each output, fn item ->
+          send(self(), {:output, item})
+        end
+
+        if exit do
+          send(self(), {:exit, exit})
+        end
+      :error ->
+        send_output({1_000, "stderr", "itty missing"}, socket)
+    end
+
+    {:noreply, socket}
   end
 
   def handle_info(:show_score, socket) do
