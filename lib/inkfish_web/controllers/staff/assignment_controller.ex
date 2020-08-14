@@ -81,8 +81,10 @@ defmodule InkfishWeb.Staff.AssignmentController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         teamsets = Inkfish.Teams.list_teamsets(conn.assigns[:course])
+        sta_tok = upload_token(conn, "assignment_starter")
+        sol_tok = upload_token(conn, "assignment_solution")
         render(conn, "edit.html", assignment: assignment, changeset: changeset,
-          teamsets: teamsets)
+          teamsets: teamsets, sta_tok: sta_tok, sol_tok: sol_tok)
     end
   end
 

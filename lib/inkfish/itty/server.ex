@@ -76,14 +76,12 @@ defmodule Inkfish.Itty.Server do
   end
 
   def handle_call({:run, cmd, env}, _from, state0) do
-    IO.inspect({:run, cmd, env})
-
     env = [{"COOKIE", state0.cookie} | env]
     |> Enum.map(fn {kk, vv} ->
       {to_charlist(to_string(kk)), to_charlist(vv)}
     end)
 
-    IO.inspect({:env, env})
+    #IO.inspect({:env, env})
 
     cmd
     |> to_charlist()

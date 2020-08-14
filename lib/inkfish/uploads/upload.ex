@@ -14,6 +14,7 @@ defmodule Inkfish.Uploads.Upload do
   schema "uploads" do
     field :name, :string
     field :kind, :string
+    field :size, :integer
     belongs_to :user, Inkfish.Users.User
 
     has_one :photo_user, Inkfish.Users.User, foreign_key: :photo_upload_id
@@ -24,7 +25,6 @@ defmodule Inkfish.Uploads.Upload do
     has_many :subs, Inkfish.Subs.Sub
 
     field :upload, :any, virtual: true
-    field :size, :any, virtual: true
 
     timestamps()
   end
@@ -38,13 +38,14 @@ defmodule Inkfish.Uploads.Upload do
     |> validate_required([:upload, :kind, :user_id, :name])
     |> validate_kind()
     |> validate_file_size()
+    |> validate_required([:size])
   end
 
   def git_changeset(upload, attrs) do
     # Uploads are immutable, so all changesets are new inserts.
     upload
-    |> cast(attrs, [:kind, :user_id, :name])
-    |> validate_required([:kind, :user_id, :name])
+    |> cast(attrs, [:kind, :user_id, :name, :size])
+    |> validate_required([:kind, :user_id, :name, :size])
     |> validate_kind()
   end
 
@@ -54,6 +55,7 @@ defmodule Inkfish.Uploads.Upload do
     |> cast(attrs, [:kind, :user_id, :name])
     |> validate_required([:kind, :user_id, :name])
     |> validate_kind()
+    |> validate_required([:size])
   end
 
   def copy_file!(upload, src) do

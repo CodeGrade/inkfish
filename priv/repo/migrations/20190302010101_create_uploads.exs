@@ -6,6 +6,7 @@ defmodule Inkfish.Repo.Migrations.CreateUploads do
       add :id, :binary_id, primary_key: true, null: false
       add :name, :string, null: false
       add :kind, :string, null: false
+      add :size, :integer, null: false
       add :user_id, references(:users, on_delete: :delete_all), null: false
 
       timestamps()
