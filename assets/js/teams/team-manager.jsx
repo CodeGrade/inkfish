@@ -1,6 +1,9 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { freeze } from 'icepick';
+import _ from 'lodash';
+
+import * as ajax from './ajax';
 
 export default function init() {
   let root = document.getElementById('team-manager');
@@ -14,7 +17,7 @@ export default function init() {
 class TeamManager extends React.Component {
   constructor(props) {
     super(props);
-    this.state = deepFreeze(props.data);
+    this.state = freeze(props.data);
   }
 
   remove_member(reg) {
@@ -23,7 +26,7 @@ class TeamManager extends React.Component {
       this.state.new_team_regs,
       (rr) => (rr.id != reg.id)
     );
-    this.setState(deepFreeze({
+    this.setState(freeze({
       ...this.state,
       new_team_regs: regs,
     }));
@@ -32,7 +35,7 @@ class TeamManager extends React.Component {
   add_member(reg) {
     console.log("add", reg);
     let regs = _.concat(this.state.new_team_regs, reg);
-    this.setState(deepFreeze({
+    this.setState(freeze({
       ...this.state,
       new_team_regs: regs,
     }));
@@ -40,76 +43,31 @@ class TeamManager extends React.Component {
 
   reset_data(data) {
     data.new_team_regs = [];
-    this.setState(deepFreeze(data));
+    this.setState(freeze(data));
   }
 
   create_team(_ev) {
-    console.log("create", this.state.new_team_regs);
-    let body = {
-      team: {
-        active: true,
-        teamset_id: this.state.id,
-        reg_ids: _.map(this.state.new_team_regs, (reg) => reg.id),
-      }
-    };
-
-    fetch(window.create_team_path, {
-      method: "post",
-      dataType: "json",
-      contentType: "application/json; charset=UTF-8",
-      data: JSON.stringify(body),
-      headers: { "x-csrf-token": window.csrf_token },
-      success: (data, status) => {
-        data = data.data;
-        console.log("created", data);
-        this.reset_data(data.teamset);
-      },
-      error: (xhr, status) => {
-        console.log("create failed", status, xhr);
-      }
-    });
+    ajax.create_team(this.state.id, this.state.new_team_regs)
+        .then((data) => {
+          console.log("created", data);
+          this.reset_data(data.data.teamset);
+        });
   }
 
   set_active_team(team, active) {
-    console.log("set active", team, active);
-    let body = { team: { active: active } };
-    let path = window.team_path_template.replace("ID", team.id);
-    fetch(path, {
-      method: "patch",
-      dataType: "json",
-      contentType: "application/json; charset=UTF-8",
-      data: JSON.stringify(body),
-      headers: { "x-csrf-token": window.csrf_token },
-      success: (data, status) => {
-        data = data.data;
-        console.log("created", data);
-        this.reset_data(data.teamset);
-      },
-      error: (xhr, status) => {
-        console.log("create failed", status, xhr);
-      }
-    });
+    ajax.set_active_team(team, active)
+        .then((data) => {
+          console.log("set_active", data);
+          this.reset_data(data.data.teamset);
+        });
   }
 
   delete_team(team) {
-    console.log("delete", team);
-
-    let path = window.team_path_template.replace("ID", team.id);
-    $.ajax(path, {
-      method: "delete",
-      dataType: "json",
-      contentType: "application/json; charset=UTF-8",
-      data: JSON.stringify({}),
-      headers: { "x-csrf-token": window.csrf_token },
-      success: (data, status) => {
-        data = data.data;
-        console.log("deleted", data.id);
-        this.reset_data(data.teamset);
-      },
-      error: (xhr, status) => {
-        console.log("delete failed", status, xhr);
-      }
-    });
+    ajax.delete_team(team)
+        .then((data) => {
+          console.log("deleted", data);
+          this.reset_data(data.data.teamset);
+        });
   }
 
   student_teams_map() {
