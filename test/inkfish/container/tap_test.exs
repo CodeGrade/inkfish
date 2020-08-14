@@ -1,7 +1,7 @@
-defmodule Inkfish.Autograde.TapTest do
+defmodule Inkfish.Container.TapTest do
   use ExUnit.Case
 
-  alias Inkfish.Autograde.Tap
+  alias Inkfish.Container.Tap
 
   @tap_good """
   1..8

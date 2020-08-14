@@ -6,6 +6,8 @@ defmodule Inkfish.Application do
   use Application
 
   def start(_type, _args) do
+    {:ok, _} = Inkfish.Container.Queue.start()
+
     children = [
       # Start the Ecto repository
       Inkfish.Repo,
@@ -15,8 +17,11 @@ defmodule Inkfish.Application do
       {Phoenix.PubSub, name: Inkfish.PubSub},
       # Start the Endpoint (http/https)
       InkfishWeb.Endpoint,
-      # Start a worker by calling: Inkfish.Worker.start_link(arg)
+      # Live console output
       Inkfish.Itty.Sup,
+      # Container jobs
+      Inkfish.Container.Worker,
+      Inkfish.Container.Sup,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

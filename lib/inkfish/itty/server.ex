@@ -1,12 +1,13 @@
 defmodule Inkfish.Itty.Server do
+  import Inkfish.Text, only: [corrupt_invalid_utf8: 1]
   use GenServer
 
   # How long to stay alive waiting for late
   # subscribers after the process terminates.
   @linger_seconds 60
 
-  def start_link(uuid, cmd, env, on_exit) do
-    GenServer.start_link(__MODULE__, {uuid, cmd, env, on_exit}, name: reg(uuid))
+  def start_link(uuid, on_exit) do
+    GenServer.start_link(__MODULE__, {uuid, on_exit}, name: reg(uuid))
   end
 
   def reg(uuid) do
@@ -18,15 +19,23 @@ defmodule Inkfish.Itty.Server do
 
   Returns a uuid.
   """
-  def start(cmd, env, on_exit) do
-    uuid = :crypto.strong_rand_bytes(16) |> Base.encode16
+  def start(uuid, on_exit) do
     spec = %{
       id: __MODULE__,
-      start: {__MODULE__, :start_link, [uuid, cmd, env, on_exit]},
+      start: {__MODULE__, :start_link, [uuid, on_exit]},
       restart: :temporary,
     }
     {:ok, _cpid} = DynamicSupervisor.start_child(Inkfish.Itty.DynSup, spec)
-    {:ok, uuid}
+    :ok
+  end
+
+
+  def run(uuid, cmd, env) do
+    GenServer.call(reg(uuid), {:run, cmd, env})
+  end
+
+  def echo(uuid, msg) do
+    GenServer.call(reg(uuid), {:echo, msg})
   end
 
   @doc """
@@ -37,7 +46,10 @@ defmodule Inkfish.Itty.Server do
   Subscribes remote pid to recieve messages on future output.
   """
   def open(uuid, rpid) do
-    GenServer.call(reg(uuid), {:open, rpid})
+    case Registry.lookup(Inkfish.Itty.Reg, uuid) do
+      [{pid, _}] -> GenServer.call(pid, {:open, rpid})
+      _else -> :error
+    end
   end
 
   @doc """
@@ -50,18 +62,9 @@ defmodule Inkfish.Itty.Server do
   end
 
   @impl true
-  def init({cookie, cmd, env, on_exit}) do
-    env = [{"COOKIE", cookie} | env]
-    |> Enum.map(fn {kk, vv} ->
-      {to_charlist(to_string(kk)), to_charlist(vv)} end
-    )
-
-    cmd
-    |> to_charlist()
-    |> :exec.run([{:env, env}, {:stdout, self()}, {:stderr, self()}, :monitor])
-
+  def init({uuid, on_exit}) do
     state0 = %{
-      cookie: cookie,
+      cookie: uuid,
       output: [],
       serial: 0,
       exit: nil,
@@ -70,6 +73,26 @@ defmodule Inkfish.Itty.Server do
     }
 
     {:ok, state0}
+  end
+
+  def handle_call({:run, cmd, env}, _from, state0) do
+    env = [{"COOKIE", state0.cookie} | env]
+    |> Enum.map(fn {kk, vv} ->
+      {to_charlist(to_string(kk)), to_charlist(vv)}
+    end)
+
+    #IO.inspect({:env, env})
+
+    cmd
+    |> to_charlist()
+    |> :exec.run([{:env, env}, {:stdout, self()}, {:stderr, self()}, :monitor])
+
+    {:reply, :ok, state0}
+  end
+
+  def handle_call({:echo, msg}, _from, state0) do
+    state1 = send_output("stdout", msg, state0)
+    {:reply, :ok, state1}
   end
 
   @impl true
@@ -89,7 +112,7 @@ defmodule Inkfish.Itty.Server do
   end
 
   def send_output(stream, text, state0) do
-    item = {state0.serial, stream, sanitize_utf8(text)}
+    item = {state0.serial, stream, corrupt_invalid_utf8(text)}
     broadcast(state0.subs, {:output, item})
     state0
     |> Map.update!(:output, &([item | &1]))
@@ -142,12 +165,5 @@ defmodule Inkfish.Itty.Server do
     else
       ""
     end
-  end
-
-  def sanitize_utf8(text) do
-    text
-    |> String.codepoints
-    |> Enum.filter(&String.valid?/1)
-    |> Enum.join("")
   end
 end

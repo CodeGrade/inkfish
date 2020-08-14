@@ -6,7 +6,10 @@ defmodule Inkfish.Uploads.Git do
     script = :code.priv_dir(:inkfish)
     |> Path.join("scripts/upload_git_clone.sh")
 
-    Inkfish.Itty.start(script, REPO: url, SIZE: "5m")
+    uuid = Inkfish.Text.gen_uuid()
+    :ok = Inkfish.Itty.start(uuid)
+    :ok = Inkfish.Itty.run(uuid, script, REPO: url, SIZE: "5m")
+    {:ok, uuid}
   end
 
   def get_results(uuid) do
@@ -27,11 +30,13 @@ defmodule Inkfish.Uploads.Git do
   def create_upload(data, kind, user_id) do
     %{"dir" => dir, "tar" => tar} = data
     file_name = Path.basename(tar)
+    size = Upload.file_size(tar)
 
     params = %{
       "kind" => kind,
       "user_id" => user_id,
       "name" => file_name,
+      "size" => size,
     }
     {:ok, upload} = Uploads.create_git_upload(params)
 

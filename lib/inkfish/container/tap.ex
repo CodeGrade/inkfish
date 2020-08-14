@@ -1,4 +1,4 @@
-defmodule Inkfish.Autograde.Tap do
+defmodule Inkfish.Container.Tap do
   @doc """
   Parses TAP as output by Perl's Test::Simple.
 

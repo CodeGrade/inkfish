@@ -1,6 +1,9 @@
 use Mix.Config
 
+{:ok, hostname} = :inet.gethostname()
+
 config :inkfish, :env, :dev
+config :inkfish, :download_host, "http://#{hostname}:4000"
 
 # Configure your database
 config :inkfish, Inkfish.Repo,

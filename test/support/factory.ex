@@ -96,6 +96,7 @@ defmodule Inkfish.Factory do
       name: "helloc.tar.gz",
       kind: "assignment_starter",
       user: build(:user),
+      size: 9001,
     }
   end
   

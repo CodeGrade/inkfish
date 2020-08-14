@@ -13,6 +13,9 @@ config :inkfish, InkfishWeb.Endpoint,
   url: [host: "example.com", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
+config :inkfish, download_host: "https://inkfish.ccs.neu.edu"
+config :inkfish, :env, :prod
+
 # Do not print debug messages in production
 config :logger, level: :info
 

@@ -54,6 +54,7 @@ defmodule Inkfish.MixProject do
       {:earmark, "~> 1.4"},
       {:html_sanitize_ex, "~> 1.4"},
       {:inflex, "~> 2.0" },
+      {:singleton, "~> 1.3"},
       {:ex_machina, "~> 2.4", only: :test},
       {:phoenix_integration, "~> 0.8", only: :test},
       {:hound, "~> 1.1", only: :test},
