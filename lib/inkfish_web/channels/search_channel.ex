@@ -29,7 +29,7 @@ defmodule InkfishWeb.SearchChannel do
   # Add authorization logic here as required.
   defp authorized?(socket, _payload) do
     user = Inkfish.Users.get_user!(socket.assigns[:user_id])
-    user.is_admin
+    !is_nil(user)
   end
 end
 
