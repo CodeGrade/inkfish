@@ -11,7 +11,6 @@ defmodule Inkfish.Grades.Grade do
     field :log_uuid, :string
     belongs_to :sub, Inkfish.Subs.Sub
     belongs_to :grade_column, Inkfish.Grades.GradeColumn
-    belongs_to :grader, Inkfish.Users.User
     has_many :line_comments, Inkfish.LineComments.LineComment
 
     timestamps()
@@ -20,12 +19,12 @@ defmodule Inkfish.Grades.Grade do
   @doc false
   def changeset(grade, attrs) do
     grade
-    |> cast(attrs, [:grade_column_id, :sub_id, :score, :grader_id, :log_uuid])
+    |> cast(attrs, [:grade_column_id, :sub_id, :score, :log_uuid])
     |> validate_required([:grade_column_id, :sub_id])
   end
 
   def to_map(grade) do
-    grade = Map.drop(grade, [:__struct__, :__meta__, :sub, :grade_column, :grader])
+    grade = Map.drop(grade, [:__struct__, :__meta__, :sub, :grade_column])
     lcs = Enum.map grade.line_comments, fn lc ->
       Inkfish.LineComments.LineComment.to_map(lc)
     end

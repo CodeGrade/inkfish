@@ -7,10 +7,6 @@ defmodule Inkfish.Repo.Migrations.CreateGrades do
       add :sub_id, references(:subs, on_delete: :delete_all), null: false
       add :grade_column_id, references(:grade_columns, on_delete: :delete_all), null: false
 
-      # Assigned grader.
-      # For "number" grades, whoever enters it.
-      add :grader_id, references(:users, on_delete: :nilify_all)
-
       timestamps()
     end
 

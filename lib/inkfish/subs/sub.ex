@@ -15,6 +15,7 @@ defmodule Inkfish.Subs.Sub do
     belongs_to :reg, Inkfish.Users.Reg
     belongs_to :team, Inkfish.Teams.Team
     belongs_to :upload, Inkfish.Uploads.Upload, type: :binary_id
+    belongs_to :grader, Inkfish.Users.Reg
     has_many :grades, Inkfish.Grades.Grade
 
     timestamps()
@@ -23,7 +24,8 @@ defmodule Inkfish.Subs.Sub do
   @doc false
   def changeset(sub, attrs) do
     sub
-    |> cast(attrs, [:assignment_id, :reg_id, :team_id, :upload_id, :hours_spent, :note])
+    |> cast(attrs, [:assignment_id, :reg_id, :team_id, :upload_id,
+                   :hours_spent, :note, :grader_id])
     |> validate_required([:assignment_id, :reg_id, :team_id, :upload_id, :hours_spent])
     |> foreign_key_constraint(:upload_id)
   end
@@ -42,7 +44,10 @@ defmodule Inkfish.Subs.Sub do
     grades = Enum.map sub.grades, fn gr ->
       Inkfish.Grades.Grade.to_map(gr)
     end
-    sub = Map.drop(sub, [:__struct__, :__meta__, :assignment, :reg, :team, :upload])
+    sub = Map.drop(
+      sub,
+      [:__struct__, :__meta__, :assignment, :reg, :team, :upload, :grader]
+    )
     %{ sub | grades: grades }
   end
 end

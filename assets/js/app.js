@@ -25,6 +25,7 @@ import "./grades/number-input";
 import "./code-view/init";
 import "./dates/init";
 import "./uploads/init";
+import "./collapse";
 import init_teams from "./teams/team-manager";
 import init_autograde from './autograde';
 

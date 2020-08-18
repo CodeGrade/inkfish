@@ -227,18 +227,11 @@ defmodule Inkfish.Grades do
 
   """
   def create_grade(attrs \\ %{}) do
-    result = %Grade{}
+    %Grade{}
     |> Grade.changeset(attrs)
     |> Repo.insert(
       on_conflict: {:replace, [:score]},
       conflict_target: [:sub_id, :grade_column_id])
-
-    case result do
-      {:ok, grade} ->
-        {:ok, Repo.preload(grade, [:grader])}
-      error ->
-        error
-    end
   end
 
   def create_null_grade(sub_id, grade_column_id) do

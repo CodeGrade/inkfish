@@ -236,12 +236,14 @@ defmodule Inkfish.Assignments do
 
   def assign_grading_tasks(as_id) do
     as = get_assignment_path!(as_id)
+    raise "Actually do thing"
 
+    # FIXME: Actually do thing
     # Remove grading tasks for inactive subs.
-    GradingTasks.unassign_inactive_subs(as)
+    #GradingTasks.unassign_inactive_subs(as)
 
     # Process active subs.
-    GradingTasks.assign_grading_tasks(as)
+    #GradingTasks.assign_grading_tasks(as)
   end
 
   def list_grading_tasks(as) do
@@ -251,12 +253,12 @@ defmodule Inkfish.Assignments do
       inner_join: reg in assoc(sub, :reg),
       inner_join: user in assoc(reg, :user),
       inner_join: gcol in assoc(grade, :grade_column),
-      left_join: grader in assoc(grade, :grader),
+      left_join: grader in assoc(sub, :grader),
       where: asg.id == ^as.id,
       where: gcol.kind == "feedback",
       where: sub.active,
       where: reg.is_student,
-      preload: [sub: {sub, assignment: asg, reg: {reg, user: user}},
-                grade_column: gcol, grader: grader]
+      preload: [sub: {sub, assignment: asg, grader: grader, reg: {reg, user: user}},
+                grade_column: gcol]
   end
 end

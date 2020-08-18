@@ -68,6 +68,24 @@ defmodule Inkfish.Courses do
     end
   end
 
+  def get_course_for_grading_tasks!(id) do
+    Repo.one! from cc in Course,
+      where: cc.id == ^id,
+      left_join: buckets in assoc(cc, :buckets),
+      left_join: asgs in assoc(buckets, :assignments),
+      left_join: gcols in assoc(asgs, :grade_columns),
+      left_join: subs in assoc(asgs, :subs),
+      left_join: grades in assoc(subs, :grades),
+      left_join: ggcol in assoc(grades, :grade_column),
+      left_join: grader in assoc(subs, :grader),
+      left_join: reg in assoc(grader, :reg),
+      left_join: user in assoc(reg, :user),
+      preload: [buckets: {buckets, assignments:
+                          {asgs, grade_columns: gcols,
+                           subs: {subs, grades: {grades, grade_column: ggcol},
+                           grader: {grader, reg: {reg, user: user}}}}}]
+  end
+
   def get_course_for_staff_view!(id) do
     Repo.one! from cc in Course,
       where: cc.id == ^id,
@@ -138,6 +156,15 @@ defmodule Inkfish.Courses do
       {ts.id, team}
     end
     Enum.into(ts, %{})
+  end
+
+  def get_course_by_name(name) do
+    course = Repo.get_by(Course, name: name)
+    if course do
+      get_course_for_student_view!(course.id)
+    else
+      nil
+    end
   end
 
   @doc """

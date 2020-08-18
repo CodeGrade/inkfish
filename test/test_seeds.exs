@@ -71,8 +71,9 @@ c0 = Make.course("Data Science of Art History")
 #_c1 = Make.course("Machine Learning with Baroque Pottery")
 
 Make.reg(u1, c0, is_prof: true)
-Make.reg(u2, c0, is_staff: true)
+Make.reg(u2, c0, is_staff: true, is_grader: true)
 Make.reg(u3, c0, is_student: true)
 
 b0 = Make.bucket(c0, "Homework", Decimal.new("1.0"))
 _a1 = Make.assignment(b0, "HW01")
+
