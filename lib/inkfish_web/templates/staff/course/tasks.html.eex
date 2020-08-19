@@ -1,0 +1,18 @@
+<h1>Grading Tasks</h1>
+
+<%= for bucket <- @course.buckets do %>
+  <h2><%= bucket.name %></h2>
+  <ul>
+    <%= for asg <- bucket.assignments do %>
+      <li>
+        <% path = Routes.staff_assignment_grading_task_path(@conn, :show, asg) %>
+        <%= link(asg.name, to: path) %>
+        <%= if @tasks[asg.id] > 0 do %>
+          <span class="badge badge-warning">
+            <%= @tasks[asg.id] %>
+          </span>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

@@ -40,6 +40,14 @@ defmodule Inkfish.Subs.Sub do
     |> validate_required([:ignore_late_penalty])
   end
 
+  def change_grader(sub, grader_id) do
+    attrs = %{"grader_id" => grader_id}
+    sub
+    |> cast(attrs, [:grader_id])
+    |> validate_required([:grader_id])
+    |> foreign_key_constraint(:grader_id)
+  end
+
   def to_map(sub) do
     grades = Enum.map sub.grades, fn gr ->
       Inkfish.Grades.Grade.to_map(gr)

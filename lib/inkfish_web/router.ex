@@ -67,6 +67,7 @@ defmodule InkfishWeb.Router do
       resources "/buckets", BucketController, only: [:index, :new, :create]
     end
     get "/courses/:id/gradesheet", CourseController, :gradesheet
+    get "/courses/:id/tasks", CourseController, :tasks
     resources "/regs", RegController, except: [:index, :new, :create]
     resources "/join_reqs", JoinReqController, only: [:show, :delete]
     post "/join_reqs/:id/accept", JoinReqController, :accept

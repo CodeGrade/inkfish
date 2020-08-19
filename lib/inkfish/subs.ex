@@ -67,6 +67,14 @@ defmodule Inkfish.Subs do
       limit: 1
   end
 
+  def count_subs_for_grader(asgs, reg) do
+    as_ids = Enum.map(asgs, &(&1.id))
+    Repo.one from sub in Sub,
+      where: sub.grader_id == ^reg.id,
+      where: sub.assignment_id in ^as_ids,
+      select: count(sub.id)
+  end
+
   @doc """
   Gets a single sub.
 
@@ -199,6 +207,12 @@ defmodule Inkfish.Subs do
   def update_sub(%Sub{} = sub, attrs) do
     sub
     |> Sub.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def update_sub_grader(%Sub{} = sub, grader_id) do
+    sub
+    |> Sub.change_grader(grader_id)
     |> Repo.update()
   end
 

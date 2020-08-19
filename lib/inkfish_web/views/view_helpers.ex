@@ -8,6 +8,7 @@ defmodule InkfishWeb.ViewHelpers do
   alias Inkfish.Courses.Course
   alias Inkfish.Subs.Sub
   alias Inkfish.Grades.Grade
+  alias Inkfish.Grades.GradeColumn
   alias Inkfish.Assignments.Assignment
   alias Inkfish.Teams.Team
   alias Inkfish.LocalTime
@@ -31,6 +32,10 @@ defmodule InkfishWeb.ViewHelpers do
 
   def user_display_name(nil) do
     "(none)"
+  end
+
+  def user_display_name(%Reg{} = reg) do
+    user_display_name(reg.user)
   end
 
   def user_display_name(%User{} = user) do
@@ -142,6 +147,10 @@ defmodule InkfishWeb.ViewHelpers do
   def show_score(conn, %Assignment{} = asgn) do
     sub = Enum.find asgn.subs, &(&1.active)
     show_score(conn, asgn, sub && sub.score)
+  end
+
+  def show_score(_conn, %GradeColumn{} = gcol) do
+    show_score(gcol.points)
   end
 
   def show_score(_conn, %Assignment{} = _a, nil) do

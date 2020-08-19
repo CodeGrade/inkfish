@@ -78,12 +78,11 @@ defmodule Inkfish.Courses do
       left_join: grades in assoc(subs, :grades),
       left_join: ggcol in assoc(grades, :grade_column),
       left_join: grader in assoc(subs, :grader),
-      left_join: reg in assoc(grader, :reg),
-      left_join: user in assoc(reg, :user),
+      left_join: user in assoc(grader, :user),
       preload: [buckets: {buckets, assignments:
                           {asgs, grade_columns: gcols,
                            subs: {subs, grades: {grades, grade_column: ggcol},
-                           grader: {grader, reg: {reg, user: user}}}}}]
+                           grader: {grader, user: user}}}}]
   end
 
   def get_course_for_staff_view!(id) do
@@ -91,10 +90,10 @@ defmodule Inkfish.Courses do
       where: cc.id == ^id,
       left_join: buckets in assoc(cc, :buckets),
       left_join: bas in assoc(buckets, :assignments),
+      left_join: gcols in assoc(bas, :grade_columns),
       left_join: teamsets in assoc(cc, :teamsets),
       left_join: tas in assoc(teamsets, :assignments),
       left_join: reqs in assoc(cc, :join_reqs),
-      left_join: gcols in assoc(bas, :grade_columns),
       order_by: [asc: buckets.name, desc: bas.due, asc: bas.name],
       preload: [buckets: {buckets, assignments: {bas, grade_columns: gcols}},
                 teamsets: {teamsets, assignments: tas},
@@ -294,12 +293,11 @@ defmodule Inkfish.Courses do
   end
 
   def list_course_graders(course_id) do
-    regs = Repo.all from reg in Reg,
+    Repo.all from reg in Reg,
       inner_join: user in assoc(reg, :user),
       where: reg.course_id == ^course_id,
       where: reg.is_grader,
       preload: [user: user]
-    Enum.map regs, &(&1.user)
   end
 
   @doc """
