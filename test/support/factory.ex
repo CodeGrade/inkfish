@@ -151,6 +151,7 @@ defmodule Inkfish.Factory do
       reg: build(:reg),
       team: build(:team),
       upload: build(:upload),
+      grader: build(:reg),
     }
   end
 
@@ -169,7 +170,6 @@ defmodule Inkfish.Factory do
       score: Decimal.new("45.7"),
       sub: build(:sub),
       grade_column: build(:grade_column),
-      grader: build(:user),
     }
   end
 

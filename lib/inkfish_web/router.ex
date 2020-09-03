@@ -60,7 +60,7 @@ defmodule InkfishWeb.Router do
   scope "/staff", InkfishWeb.Staff, as: :staff do
     pipe_through :browser
 
-    resources "/courses", CourseController do
+    resources "/courses", CourseController, only: [:index, :show, :edit, :update] do
       resources "/regs", RegController, only: [:index, :new, :create]
       resources "/join_reqs", JoinReqController, only: [:index]
       resources "/teamsets", TeamsetController, only: [:index, :new, :create]

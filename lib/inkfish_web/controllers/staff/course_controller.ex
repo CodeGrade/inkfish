@@ -3,8 +3,9 @@ defmodule InkfishWeb.Staff.CourseController do
 
   alias InkfishWeb.Plugs
   plug Plugs.FetchItem, [course: "id"]
-    when action not in [:index, :new, :create]
-  plug Plugs.RequireReg, staff: true
+    when action not in [:index]
+  plug Plugs.RequireReg, [staff: true]
+    when action not in [:index]
 
   plug InkfishWeb.Plugs.Breadcrumb, {"Courses (Staff)", :staff_course, :index}
   plug InkfishWeb.Plugs.Breadcrumb, {:show, :staff, :course}
@@ -18,23 +19,6 @@ defmodule InkfishWeb.Staff.CourseController do
   def index(conn, _params) do
     courses = Courses.list_courses()
     render(conn, "index.html", courses: courses)
-  end
-
-  def new(conn, _params) do
-    changeset = Courses.change_course(%Course{})
-    render(conn, "new.html", changeset: changeset)
-  end
-
-  def create(conn, %{"course" => course_params}) do
-    case Courses.create_course(course_params) do
-      {:ok, course} ->
-        conn
-        |> put_flash(:info, "Course created successfully.")
-        |> redirect(to: Routes.staff_course_path(conn, :show, course))
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
-    end
   end
 
   def show(conn, %{"id" => id}) do
@@ -62,15 +46,6 @@ defmodule InkfishWeb.Staff.CourseController do
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", course: course, changeset: changeset)
     end
-  end
-
-  def delete(conn, %{"id" => _id}) do
-    course = conn.assigns[:course]
-    {:ok, _course} = Courses.delete_course(course)
-
-    conn
-    |> put_flash(:info, "Course deleted successfully.")
-    |> redirect(to: Routes.staff_course_path(conn, :index))
   end
 
   def gradesheet(conn, %{"id" => id}) do
