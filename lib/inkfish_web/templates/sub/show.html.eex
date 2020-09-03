@@ -15,7 +15,7 @@
 
   <li>
     <strong>Submitter:</strong>
-    <%= user_display_name(@sub.reg.user) %>
+    <%= user_display_name(@sub.reg) %>
   </li>
 
   <li>
@@ -31,6 +31,11 @@
   <li>
     <strong>Hours Spent:</strong>
     <%= @sub.hours_spent %>
+  </li>
+
+  <li>
+    <strong>Assigned Grader:</strong>
+    <%= user_display_name(@sub.grader) %>
   </li>
 
   <li>

@@ -96,12 +96,15 @@ defmodule Inkfish.Subs do
       inner_join: reg in assoc(sub, :reg),
       inner_join: user in assoc(reg, :user),
       inner_join: team in assoc(sub, :team),
+      left_join: grader in assoc(sub, :grader),
+      left_join: gruser in assoc(grader, :user),
       left_join: grades in assoc(sub, :grades),
       left_join: lcs in assoc(grades, :line_comments),
       left_join: gc in assoc(grades, :grade_column),
       preload: [upload: upload, team: team,
                 grades: {grades, grade_column: gc, line_comments: lcs},
-                reg: {reg, user: user}]
+                reg: {reg, user: user},
+                grader: {grader, user: gruser}]
   end
 
   def get_sub_path!(id) do

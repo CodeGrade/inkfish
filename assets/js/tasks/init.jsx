@@ -9,7 +9,7 @@ function init() {
     let graders = window.grading_task_graders;
     let asg = window.grading_task_asg;
     ReactDOM.render(
-      <TaskEditor graders={graders} asg={asg} />,
+      <TaskEditor graders={graders} assignment={asg} />,
       item
     );
   });

@@ -32,7 +32,7 @@ defmodule InkfishWeb.Staff.GradingTaskController do
   def create(conn, _params) do
     %{assignment: as} = conn.assigns
 
-    GradingTasks.assign_grading_tasks(as)
+    :ok = Inkfish.GradingTasks.assign_grading_tasks(as)
 
     conn
     |> put_flash(:info, "Grading has been assigned.")

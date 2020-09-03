@@ -44,7 +44,7 @@ defmodule Inkfish.Subs.Sub do
     attrs = %{"grader_id" => grader_id}
     sub
     |> cast(attrs, [:grader_id])
-    |> validate_required([:grader_id])
+    |> validate_required([])
     |> foreign_key_constraint(:grader_id)
   end
 

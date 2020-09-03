@@ -1,6 +1,7 @@
 defmodule Inkfish.GradingTasks do
   alias Inkfish.Courses
   alias Inkfish.Assignments
+  alias Inkfish.Assignments.Assignment
   alias Inkfish.Users
   alias Inkfish.Subs
 
@@ -53,7 +54,7 @@ defmodule Inkfish.GradingTasks do
     reg.grading_subs
   end
 
-  def assign_grading_tasks(asg) do
+  def assign_grading_tasks(%Assignment{} = asg) do
     asg = Assignments.get_assignment_for_grading_tasks!(asg.id)
     graders = Courses.list_course_graders(asg.bucket.course_id)
 
@@ -77,6 +78,11 @@ defmodule Inkfish.GradingTasks do
     end)
     |> Enum.sort_by(fn {xx, _gdr} -> xx end)
     |> assign_grading_tasks(ts)
+  end
+
+  def assign_grading_tasks(asg_id) do
+    Assignments.get_assignment_for_grading_tasks!(asg_id)
+    |> assign_grading_tasks
   end
 
   def assign_grading_tasks(_graders, []) do

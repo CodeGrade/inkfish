@@ -20,6 +20,7 @@ defmodule InkfishWeb.SubController do
   alias Inkfish.Subs.Sub
   alias Inkfish.Teams
   alias Inkfish.Grades.Grade
+  alias Inkfish.GradingTasks
 
   def new(conn, _params) do
     asg = conn.assigns[:assignment]
@@ -50,6 +51,11 @@ defmodule InkfishWeb.SubController do
 
     case Subs.create_sub(sub_params) do
       {:ok, sub} ->
+
+        Task.start fn ->
+          :ok = GradingTasks.assign_grading_tasks(sub.assignment_id)
+        end
+
         conn
         |> put_flash(:info, "Sub created successfully.")
         |> redirect(to: Routes.sub_path(conn, :show, sub))

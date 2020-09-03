@@ -107,7 +107,7 @@ defmodule InkfishWeb.Router do
   scope "/ajax/staff", InkfishWeb.Staff, as: :ajax_staff do
     pipe_through :ajax
 
-    resources "/subs", SubController, only: [] do
+    resources "/subs", SubController, only: [:update] do
       resources "/grades", GradeController, only: [:create]
     end
     resources "/grades", GradeController, only: [] do
