@@ -47,7 +47,7 @@ defmodule Inkfish.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:decimal, "~> 1.8"},
       {:temp, "~> 0.4"},
-      {:erlexec, "~> 1.16"},
+      {:erlexec, "~> 1.17"},
       {:paddle, "~> 0.1"},
       {:gmex, "~> 0.1"},
       {:tzdata, "~> 1.0"},
