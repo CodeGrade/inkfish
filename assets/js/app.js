@@ -29,6 +29,7 @@ import "./uploads/init";
 import "./tasks/init";
 import init_teams from "./teams/team-manager";
 import init_autograde from './autograde';
+import "./gcol";
 
 function app_init() {
   init_autograde();
