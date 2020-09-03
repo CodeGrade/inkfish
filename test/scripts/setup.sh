@@ -12,4 +12,4 @@ ldapadd -h localhost:13389 -D cn=admin,dc=example,dc=com -w test -f test/scripts
 export MIX_ENV=test
 mix ecto.create
 mix ecto.migrate
-mix run test/scripts/test_seeds.exs
+mix run test/test_seeds.exs

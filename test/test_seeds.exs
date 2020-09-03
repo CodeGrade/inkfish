@@ -54,6 +54,8 @@ defmodule Make do
       name: name,
       teamset_id: course.solo_teamset_id,
       weight: Decimal.new(1),
+      desc: "this is the #{name} assignment",
+      due: Inkfish.LocalTime.in_days(2),
     }
     |> Repo.insert!()
   end
@@ -76,4 +78,3 @@ Make.reg(u3, c0, is_student: true)
 
 b0 = Make.bucket(c0, "Homework", Decimal.new("1.0"))
 _a1 = Make.assignment(b0, "HW01")
-
