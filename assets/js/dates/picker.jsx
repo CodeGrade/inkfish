@@ -23,7 +23,7 @@ export function DateTimePicker(props) {
 }
 
 export function replace_date_picker(input) {
-  let date0 = new Date();
+  let date0 = new Date(input.value);
   let name = input.getAttribute("name");
 
   let elem = (
@@ -43,7 +43,7 @@ export function DatePicker(props) {
     <RDP
       selected={date}
       onChange={(dd) => setDate(dd)}
-      dateFormat="yyyy MMMM d"
+      dateFormat="yyyy-MM-dd"
       {...props}
     />
   );
