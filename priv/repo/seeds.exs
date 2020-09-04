@@ -80,9 +80,10 @@ uF = Make.user("frank")
 
 c0 = Make.course("Data Science of Art History")
 Make.reg(uB, c0, is_prof: true)
-Make.reg(uC, c0, is_staff: true)
-Make.reg(uD, c0, is_student: true)
+Make.reg(uC, c0, is_staff: true, is_grader: true)
+Make.reg(uD, c0, is_staff: true, is_grader: true)
 Make.reg(uE, c0, is_student: true)
+Make.reg(uF, c0, is_student: true)
 
 b0 = Make.bucket(c0, "Homework", Decimal.new("1.0"))
 a0 = Make.assignment(c0, b0, "Homework 1")

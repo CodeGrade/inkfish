@@ -55,7 +55,7 @@ defmodule Inkfish.Uploads.Upload do
     |> cast(attrs, [:kind, :user_id, :name])
     |> validate_required([:kind, :user_id, :name])
     |> validate_kind()
-    |> validate_required([:size])
+    |> put_change(:size, 10)
   end
 
   def copy_file!(upload, src) do

@@ -52,6 +52,11 @@
   </li>
 
   <li>
+    <strong>Assigned Grader:</strong>
+    <%= user_display_name(@sub.grader) %>
+  </li>
+
+  <li>
     <strong>Upload:</strong>
     <%= link(@sub.upload.name,
       to: Routes.upload_path(@conn, :download, @sub.upload, @sub.upload.name)) %>

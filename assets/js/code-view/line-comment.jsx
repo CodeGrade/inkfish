@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Card, Row, Col, Form, Button } from 'react-bootstrap';
 import { AlertTriangle, Check, Save, Trash } from 'react-feather';
 
 import { delete_line_comment, update_line_comment} from '../ajax';
 
-export default function LineComment({data, setGrade, edit}) {
+export default function LineComment({data, setGrade, edit, node}) {
   const [points, setPoints] = useState(data.points);
   const [text, setText] = useState(data.text);
   const [status, setStatus] = useState(null);
+
+  useEffect(() => node.changed());
 
   let color = line_comment_color(points);
   let icons = [];
@@ -36,7 +38,6 @@ export default function LineComment({data, setGrade, edit}) {
       save(ev);
     }
   }
-
 
   function save_comment(ev) {
     ev.preventDefault();

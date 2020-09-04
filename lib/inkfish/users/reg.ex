@@ -12,8 +12,8 @@ defmodule Inkfish.Users.Reg do
     belongs_to :user, Inkfish.Users.User
     belongs_to :course, Inkfish.Courses.Course
     many_to_many :teams, Inkfish.Teams.Team, join_through: "team_members"
-    has_many :assigned_grading_subs, Inkfish.Subs.Sub,
-      foreign_key: :assigned_grader_reg_id
+    has_many :subs, Inkfish.Subs.Sub
+    has_many :grading_subs, Inkfish.Subs.Sub, foreign_key: :grader_id
 
     field :user_login, :string, virtual: true
 

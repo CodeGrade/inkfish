@@ -27,7 +27,7 @@ defmodule Inkfish.Factory do
       bucket: bucket)
     grade_column = insert(:grade_column, assignment: asgn)
     staff = Inkfish.Users.get_user_by_login!("carol")
-    staff_reg = insert(:reg, course: course, user: staff, is_staff: true)
+    staff_reg = insert(:reg, course: course, user: staff, is_staff: true, is_grader: true)
     student = Inkfish.Users.get_user_by_login!("dave")
     student_reg = insert(:reg, course: course, user: student, is_student: true)
     team = Inkfish.Teams.get_active_team(asgn, student_reg)
@@ -151,6 +151,7 @@ defmodule Inkfish.Factory do
       reg: build(:reg),
       team: build(:team),
       upload: build(:upload),
+      grader: build(:reg),
     }
   end
 
@@ -169,7 +170,6 @@ defmodule Inkfish.Factory do
       score: Decimal.new("45.7"),
       sub: build(:sub),
       grade_column: build(:grade_column),
-      grader: build(:user),
     }
   end
 

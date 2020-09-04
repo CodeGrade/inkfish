@@ -37,7 +37,7 @@ function setup_fields() {
              .receive("ok", ({matches}) => got_matches(matches));
     };
 
-    field.keyup(_.throttle(update_suggestions, 500));
+    field.on("keyup", _.throttle(update_suggestions, 500));
   });
 }
 

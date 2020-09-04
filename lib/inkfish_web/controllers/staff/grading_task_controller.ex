@@ -1,8 +1,9 @@
 defmodule InkfishWeb.Staff.GradingTaskController do
   use InkfishWeb, :controller
 
-  plug InkfishWeb.Plugs.FetchItem, [assignment: "assignment_id"]
-  plug InkfishWeb.Plugs.RequireReg, staff: true
+  alias InkfishWeb.Plugs
+  plug Plugs.FetchItem, [assignment: "assignment_id"]
+  plug Plugs.RequireReg, staff: true
 
   alias InkfishWeb.Plugs.Breadcrumb
   plug Breadcrumb, {"Courses (Staff)", :staff_course, :index}
@@ -11,16 +12,17 @@ defmodule InkfishWeb.Staff.GradingTaskController do
 
   alias Inkfish.Assignments
   alias Inkfish.Courses
+  alias Inkfish.GradingTasks
 
   def show(conn, _params) do
-    %{course: course, assignment: as, current_user: user} = conn.assigns
+    %{course: course, assignment: as, current_reg: reg} = conn.assigns
 
     graders = Courses.list_course_graders(course)
 
     tasks = Assignments.list_grading_tasks(as)
 
-    user_tasks = Enum.filter tasks, fn grade ->
-      grade.grader_id == user.id
+    user_tasks = Enum.filter tasks, fn sub ->
+      sub.grader_id == reg.id
     end
 
     render(conn, "show.html", graders: graders,
@@ -30,7 +32,7 @@ defmodule InkfishWeb.Staff.GradingTaskController do
   def create(conn, _params) do
     %{assignment: as} = conn.assigns
 
-    Inkfish.Assignments.GradingTasks.assign_grading_tasks(as)
+    :ok = Inkfish.GradingTasks.assign_grading_tasks(as)
 
     conn
     |> put_flash(:info, "Grading has been assigned.")
@@ -38,9 +40,21 @@ defmodule InkfishWeb.Staff.GradingTaskController do
   end
 
   def edit(conn, _params) do
-    %{assignment: as} = conn.assigns
+    %{course: course, assignment: as} = conn.assigns
 
-    render(conn, "edit.html")
+    graders = Courses.list_course_graders(course)
+    |> Enum.map(fn gdr ->
+      InkfishWeb.Staff.RegView.render("reg.json", %{reg: gdr})
+    end)
+    |> Jason.encode!()
+
+    asg = Assignments.get_assignment_for_grading_tasks!(as.id)
+    |> (fn arg ->
+      InkfishWeb.Staff.AssignmentView.render("assignment.json", %{assignment: arg})
+    end).()
+    |> Jason.encode!()
+
+    render(conn, "edit.html", graders: graders, asg: asg)
   end
 
   def update(conn, _params) do

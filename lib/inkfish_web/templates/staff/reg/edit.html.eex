@@ -16,27 +16,29 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :is_grader %>
-    <%= checkbox f, :is_grader, class: "form-control toggle" %>
-    <%= error_tag f, :is_grader %>
-  </div>
+    <div class="form-check">
+      <%= checkbox f, :is_grader, class: "form-check-input" %>
+      <%= label f, :is_grader %>
+      <%= error_tag f, :is_grader %>
+    </div>
 
-  <div class="form-group">
-    <%= label f, :is_prof %>
-    <%= checkbox f, :is_prof, class: "form-control toggle" %>
-    <%= error_tag f, :is_prof %>
-  </div>
+    <div class="form-check">
+      <%= checkbox f, :is_prof, class: "form-check-input" %>
+      <%= label f, :is_prof %>
+      <%= error_tag f, :is_prof %>
+    </div>
 
-  <div class="form-group">
-    <%= label f, :is_staff %>
-    <%= checkbox f, :is_staff, class: "form-control toggle" %>
-    <%= error_tag f, :is_staff %>
-  </div>
+    <div class="form-check">
+      <%= checkbox f, :is_staff, class: "form-check-input" %>
+      <%= label f, :is_staff %>
+      <%= error_tag f, :is_staff %>
+    </div>
 
-  <div class="form-group">
-    <%= label f, :is_student %>
-    <%= checkbox f, :is_student, class: "form-control toggle" %>
-    <%= error_tag f, :is_student %>
+    <div class="form-check">
+      <%= checkbox f, :is_student, class: "form-check-input" %>
+      <%= label f, :is_student %>
+      <%= error_tag f, :is_student %>
+    </div>
   </div>
 
   <div>

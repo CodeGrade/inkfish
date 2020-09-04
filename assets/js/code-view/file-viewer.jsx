@@ -27,6 +27,7 @@ export default function FileViewer({path, data, grade, setGrade}) {
   function gutter_click(_cm, line, _class, ev) {
     ev.preventDefault();
     _.debounce(() => {
+      console.log(line, ev);
       create_line_comment(grade.id, path, line)
         .then((resp) => {
           console.log("resp", resp);
@@ -52,11 +53,19 @@ export default function FileViewer({path, data, grade, setGrade}) {
         continue;
       }
 
+      if (!cm.lineInfo(lc.line)) {
+        lc.line = 0;
+      }
+
+      //let info = cm.lineInfo(lc.line);
+      //console.log(lc, info);
+
       let lc_div = document.createElement("div");
       lc_div.setAttribute('id', `line-comment-${lc.id}`);
       let node = cm.addLineWidget(lc.line, lc_div, {above: true});
       ReactDOM.render(
-        <LineComment data={lc} setGrade={setGrade} edit={data.edit}/>,
+        <LineComment data={lc} setGrade={setGrade}
+                     edit={data.edit} node={node} />,
         lc_div
       );
     }

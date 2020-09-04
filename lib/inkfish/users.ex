@@ -281,6 +281,19 @@ defmodule Inkfish.Users do
     Repo.preload(reg, [teams: :subs])
   end
 
+  def get_reg_for_grading_tasks!(reg_id) do
+    reg = Repo.one from reg in Reg,
+      where: reg.id == ^reg_id,
+      left_join: subs in assoc(reg, :grading_subs),
+      left_join: asg in assoc(subs, :assignment),
+      left_join: sreg in assoc(subs, :reg),
+      left_join: suser in assoc(sreg, :user),
+      preload: [
+        gradings_subs: {subs, assignment: asg,
+                              reg: {sreg, user: suser}}
+      ]
+  end
+
   @doc """
   Creates a reg.
 
@@ -353,7 +366,6 @@ defmodule Inkfish.Users do
   def change_reg(%Reg{} = reg) do
     Reg.changeset(reg, %{})
   end
-
 
   def next_due(%Reg{} = reg) do
     Inkfish.Assignments.next_due(reg.course_id, reg.user_id)

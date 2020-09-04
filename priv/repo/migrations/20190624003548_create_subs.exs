@@ -12,6 +12,7 @@ defmodule Inkfish.Repo.Migrations.CreateSubs do
       add :team_id, references(:teams, on_delete: :restrict), null: false
       add :upload_id, references(:uploads, on_delete: :restrict, type: :binary_id), null: false
       add :git_repo, :string, default: nil
+      add :grader_id, references(:regs, on_delete: :nilify_all)
 
       timestamps()
     end
@@ -19,5 +20,6 @@ defmodule Inkfish.Repo.Migrations.CreateSubs do
     create index(:subs, [:assignment_id])
     create index(:subs, [:reg_id])
     create index(:subs, [:upload_id])
+    create index(:subs, [:grader_id])
   end
 end

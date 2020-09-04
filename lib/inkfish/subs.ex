@@ -67,6 +67,15 @@ defmodule Inkfish.Subs do
       limit: 1
   end
 
+  def count_subs_for_grader(asgs, reg) do
+    as_ids = Enum.map(asgs, &(&1.id))
+    Repo.one from sub in Sub,
+      where: sub.grader_id == ^reg.id,
+      where: sub.assignment_id in ^as_ids,
+      where: sub.active,
+      select: count(sub.id)
+  end
+
   @doc """
   Gets a single sub.
 
@@ -88,12 +97,15 @@ defmodule Inkfish.Subs do
       inner_join: reg in assoc(sub, :reg),
       inner_join: user in assoc(reg, :user),
       inner_join: team in assoc(sub, :team),
+      left_join: grader in assoc(sub, :grader),
+      left_join: gruser in assoc(grader, :user),
       left_join: grades in assoc(sub, :grades),
       left_join: lcs in assoc(grades, :line_comments),
       left_join: gc in assoc(grades, :grade_column),
       preload: [upload: upload, team: team,
                 grades: {grades, grade_column: gc, line_comments: lcs},
-                reg: {reg, user: user}]
+                reg: {reg, user: user},
+                grader: {grader, user: gruser}]
   end
 
   def get_sub_path!(id) do
@@ -199,6 +211,12 @@ defmodule Inkfish.Subs do
   def update_sub(%Sub{} = sub, attrs) do
     sub
     |> Sub.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def update_sub_grader(%Sub{} = sub, grader_id) do
+    sub
+    |> Sub.change_grader(grader_id)
     |> Repo.update()
   end
 

@@ -1,1 +1,12 @@
 <h1>Edit Grading Tasks</h1>
+
+<p>Assignment: <%= @assignment.name %></p>
+
+<div id="grading-task-editor">
+  [react]
+</div>
+
+<script>
+  window.grading_task_graders = JSON.parse("<%= raw(javascript_escape(@graders)) %>");
+  window.grading_task_asg = JSON.parse("<%= raw(javascript_escape(@asg)) %>");
+</script>

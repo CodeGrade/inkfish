@@ -21,12 +21,15 @@ import $ from 'cash-dom';
 import socket from "./socket";
 import "./uploads";
 import "./search";
+import "./collapse";
 import "./grades/number-input";
 import "./code-view/init";
 import "./dates/init";
 import "./uploads/init";
+import "./tasks/init";
 import init_teams from "./teams/team-manager";
 import init_autograde from './autograde';
+import "./gcol";
 
 function app_init() {
   init_autograde();

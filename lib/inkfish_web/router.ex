@@ -60,13 +60,14 @@ defmodule InkfishWeb.Router do
   scope "/staff", InkfishWeb.Staff, as: :staff do
     pipe_through :browser
 
-    resources "/courses", CourseController do
+    resources "/courses", CourseController, only: [:index, :show, :edit, :update] do
       resources "/regs", RegController, only: [:index, :new, :create]
       resources "/join_reqs", JoinReqController, only: [:index]
       resources "/teamsets", TeamsetController, only: [:index, :new, :create]
       resources "/buckets", BucketController, only: [:index, :new, :create]
     end
     get "/courses/:id/gradesheet", CourseController, :gradesheet
+    get "/courses/:id/tasks", CourseController, :tasks
     resources "/regs", RegController, except: [:index, :new, :create]
     resources "/join_reqs", JoinReqController, only: [:show, :delete]
     post "/join_reqs/:id/accept", JoinReqController, :accept
@@ -106,7 +107,7 @@ defmodule InkfishWeb.Router do
   scope "/ajax/staff", InkfishWeb.Staff, as: :ajax_staff do
     pipe_through :ajax
 
-    resources "/subs", SubController, only: [] do
+    resources "/subs", SubController, only: [:update] do
       resources "/grades", GradeController, only: [:create]
     end
     resources "/grades", GradeController, only: [] do

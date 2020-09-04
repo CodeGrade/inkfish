@@ -10,7 +10,11 @@
   <%= if length(@course.join_reqs) > 0 do %>
     <span class="badge badge-info"><%= length(@course.join_reqs) %></span>
   <% end %> |
-  <%= link "Gradesheet", to: Routes.staff_course_path(@conn, :gradesheet, @course) %>
+  <%= link "Gradesheet", to: Routes.staff_course_path(@conn, :gradesheet, @course) %> |
+  <%= link "Tasks", to: Routes.staff_course_path(@conn, :tasks, @course) %>
+  <%= if @task_count > 0 do %>
+    <span class="badge badge-warning"><%= @task_count %></span>
+  <% end %>
 </p>
 
 <ul>

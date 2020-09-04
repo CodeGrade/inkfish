@@ -66,7 +66,7 @@
 
 <h2>
   Description
-  <button class="btn btn-link"
+  <button class="btn btn-link data-toggle"
           data-toggle="collapse"
           data-target="#asgn-desc">
     Show / Hide

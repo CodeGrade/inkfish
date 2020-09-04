@@ -105,8 +105,38 @@ defmodule Inkfish.Assignments do
       inner_join: teamset in assoc(as, :teamset),
       left_join: starter in assoc(as, :starter_upload),
       left_join: grade_columns in assoc(as, :grade_columns),
-      preload: [bucket: {bucket, course: course}, grade_columns: grade_columns,
-                teamset: teamset, starter_upload: starter]
+      preload: [
+        bucket: {bucket, course: course},
+        grade_columns: grade_columns,
+        teamset: teamset,
+        starter_upload: starter
+      ]
+  end
+
+  def get_assignment_for_grading_tasks!(id) do
+    Repo.one! from as in Assignment,
+      where: as.id == ^id,
+      left_join: bucket in assoc(as, :bucket),
+      left_join: grade_columns in assoc(as, :grade_columns),
+      left_join: subs in assoc(as, :subs),
+      left_join: grades in assoc(subs, :grades),
+      left_join: ggcol in assoc(grades, :grade_column),
+      left_join: reg in assoc(subs, :reg),
+      left_join: user in assoc(reg, :user),
+      left_join: grader in assoc(subs, :grader),
+      left_join: guser in assoc(grader, :user),
+      where: subs.active,
+      where: reg.is_student,
+      preload: [
+        bucket: bucket,
+        grade_columns: grade_columns,
+        subs: {
+          subs,
+          reg: {reg, user: user},
+          grader: {grader, user: guser},
+          grades: {grades, grade_column: ggcol}
+        }
+      ]
   end
 
   @doc """
@@ -236,27 +266,28 @@ defmodule Inkfish.Assignments do
 
   def assign_grading_tasks(as_id) do
     as = get_assignment_path!(as_id)
+    raise "Actually do thing"
 
+    # FIXME: Actually do thing
     # Remove grading tasks for inactive subs.
-    GradingTasks.unassign_inactive_subs(as)
+    #GradingTasks.unassign_inactive_subs(as)
 
     # Process active subs.
-    GradingTasks.assign_grading_tasks(as)
+    #GradingTasks.assign_grading_tasks(as)
   end
 
   def list_grading_tasks(as) do
-    Repo.all from grade in Grade,
-      inner_join: sub in assoc(grade, :sub),
-      inner_join: asg in assoc(sub, :assignment),
-      inner_join: reg in assoc(sub, :reg),
-      inner_join: user in assoc(reg, :user),
-      inner_join: gcol in assoc(grade, :grade_column),
-      left_join: grader in assoc(grade, :grader),
-      where: asg.id == ^as.id,
-      where: gcol.kind == "feedback",
-      where: sub.active,
-      where: reg.is_student,
-      preload: [sub: {sub, assignment: asg, reg: {reg, user: user}},
-                grade_column: gcol, grader: grader]
+    asg = get_assignment_for_grading_tasks!(as.id)
+
+    asg.subs
+    |> Enum.filter(fn sub ->
+      grade = Enum.find sub.grades, fn gr ->
+        gr.grade_column.kind == "feedback"
+      end
+      grade == nil || grade.score == nil
+    end)
+    |> Enum.map(fn sub ->
+      %{sub | assignment: as}
+    end)
   end
 end

@@ -121,7 +121,7 @@ defmodule Inkfish.Grades.Gradesheet do
 
     %{
       buckets: buckets,
-      total: Decimal.div(tscore, tweight),
+      total: safe_div(tscore, tweight),
     }
   end
 
