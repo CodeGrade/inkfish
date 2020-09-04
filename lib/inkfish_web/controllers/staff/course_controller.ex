@@ -66,7 +66,7 @@ defmodule InkfishWeb.Staff.CourseController do
           grade = Enum.find sub.grades, &(&1.grade_column.kind == "feedback")
           mine = (!reg.is_grader || sub.grader_id == reg.id)
           done = (grade && grade.score)
-          mine && !done
+          sub.active && mine && !done
         end
         {asg.id, length(subs)}
       end

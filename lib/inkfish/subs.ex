@@ -72,6 +72,7 @@ defmodule Inkfish.Subs do
     Repo.one from sub in Sub,
       where: sub.grader_id == ^reg.id,
       where: sub.assignment_id in ^as_ids,
+      where: sub.active,
       select: count(sub.id)
   end
 
