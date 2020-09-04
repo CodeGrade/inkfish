@@ -38,6 +38,7 @@ export function replace_date_picker(input) {
 }
 
 export function DatePicker(props) {
+  const [date, setDate] = useState(props.defaultDate);
   return (
     <RDP
       selected={date}
