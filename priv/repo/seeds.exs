@@ -9,6 +9,10 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+if Application.fetch_env!(:inkfish, :env) == :prod do
+  raise "prod"
+end
+
 alias Inkfish.Users.User
 alias Inkfish.Users.Reg
 alias Inkfish.Courses.Bucket
