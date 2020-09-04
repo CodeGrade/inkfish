@@ -3,6 +3,7 @@
 
 export MIX_ENV=prod
 export PORT=4080
+export DATABASE_URL=$(cat ~/.config/inkfish/db_url)
 
 #echo "Stopping old copy of app, if any..."
 

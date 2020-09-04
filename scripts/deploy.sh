@@ -2,6 +2,7 @@
 
 export MIX_ENV=prod
 export PORT=4080
+export DATABASE_URL=$(cat ~/.config/inkfish/db_url)
 
 sudo service inkfish stop
 
