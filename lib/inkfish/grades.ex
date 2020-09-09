@@ -318,4 +318,16 @@ defmodule Inkfish.Grades do
     Inkfish.Subs.calc_sub_score!(grade.sub_id)
     {:ok, %{grade|grade_column: gcol}}
   end
+
+  def set_grade_log!(uuid, log) do
+    grade = Repo.one! from grade in Grade,
+      where: grade.log_uuid == ^uuid,
+      inner_join: sub in assoc(grade, :sub),
+      inner_join: up in assoc(sub, :upload),
+      preload: [sub: {sub, upload: up}]
+
+    path = Grade.log_path(grade)
+    data = Jason.encode!(log)
+    File.write!(path, data)
+  end
 end

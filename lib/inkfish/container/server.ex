@@ -91,7 +91,7 @@ defmodule Inkfish.Container.Server do
       }
     end)
 
-    Queue.done(state.key, inspect(status), log)
+    Queue.done(state.key, inspect(status), result, log)
 
     {:stop, :normal, state}
   end

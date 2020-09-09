@@ -44,8 +44,8 @@ defmodule Inkfish.Container.Queue do
     GenServer.call(@name, {:get, key})
   end
 
-  def done(key, status, output) do
-    GenServer.call(@name, {:done, key, status, output})
+  def done(key, status, result, output) do
+    GenServer.call(@name, {:done, key, status, result, output})
   end
 
   def cancel(key) do
@@ -113,11 +113,17 @@ defmodule Inkfish.Container.Queue do
     {:reply, Map.get(state.jobs, key), state}
   end
 
-  def handle_call({:done, key, status, output}, _from, state0) do
+  def handle_call({:done, key, status, result, output}, _from, state0) do
     job = Map.get(state0.jobs, key)
     job = %Job{job | state: :done, output: output, status: status}
 
     #IO.inspect({:container_done, job})
+    log = %{
+      status: status,
+      result: result,
+      log: output,
+    }
+    Inkfish.Grades.set_grade_log!(job.uuid, log)
 
     state1 = put_in(state0, [:jobs, key], job)
     {:reply, job, state1}
