@@ -23,9 +23,12 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :staff_req, "Course staff?" %> &nbsp;
-    <%= checkbox f, :staff_req, class: "form-control toggle" %>
-    <%= error_tag f, :staff_req %>
+    Special role?
+    <div>
+      <%= label f, :staff_req, "Course staff" %> &nbsp;
+      <%= checkbox f, :staff_req, class: "form-check-input" %>
+      <%= error_tag f, :staff_req %>
+    </div>
   </div>
 
   <div>

@@ -2,6 +2,12 @@
 
 <p>Course: <%= @course.name %></p>
 
+<p>
+  <%= link("Accept All Students",
+           to: Routes.staff_course_join_req_path(@conn, :accept_all, @course),
+           method: :post, class: "btn btn-primary") %>
+</p>
+
 <table class="table table-striped">
   <thead>
     <tr>

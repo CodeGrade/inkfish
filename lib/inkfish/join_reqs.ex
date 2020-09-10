@@ -123,4 +123,22 @@ defmodule Inkfish.JoinReqs do
   def change_join_req(%JoinReq{} = join_req) do
     JoinReq.changeset(join_req, %{})
   end
+
+  def accept_join_req(req, allow_staff) do
+    staff = allow_staff && req.staff_req
+
+    attrs = %{
+      user_id: req.user_id,
+      course_id: req.course_id,
+      is_staff: staff,
+      is_grader: staff,
+      is_student: !staff,
+      is_prof: false,
+    }
+
+    {:ok, _reg} = Inkfish.Users.create_reg(attrs)
+    {:ok, _join_req} = delete_join_req(req)
+
+    :ok
+  end
 end
