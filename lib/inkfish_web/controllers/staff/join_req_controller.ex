@@ -6,9 +6,9 @@ defmodule InkfishWeb.Staff.JoinReqController do
 
   alias InkfishWeb.Plugs
   plug Plugs.FetchItem, [course: "course_id"]
-    when action in [:index, :new, :create]
+    when action in [:index, :new, :create, :accept_all]
   plug Plugs.FetchItem, [join_req: "id"]
-    when action not in [:index, :new, :create]
+    when action not in [:index, :new, :create, :accept_all]
 
   plug Plugs.RequireReg, staff: true
 
@@ -30,20 +30,26 @@ defmodule InkfishWeb.Staff.JoinReqController do
 
   def accept(conn, %{"id" => _id}) do
     req = conn.assigns[:join_req]
-
-    attrs = %{
-      user_id: req.user_id,
-      course_id: req.course_id,
-      is_staff: req.staff_req,
-      is_grader: req.staff_req,
-      is_student: !req.staff_req,
-      is_prof: false,
-    }
-    {:ok, _reg} = Users.create_reg(attrs)
-    {:ok, _join_req} = JoinReqs.delete_join_req(req)
+    :ok = JoinReqs.accept_join_req(req, true)
 
     conn
     |> put_flash(:info, "Join req accepted.")
+    |> redirect(to: Routes.staff_course_join_req_path(conn, :index, conn.assigns[:course]))
+  end
+
+  def accept_all(conn, %{"course_id" => course_id}) do
+    course = conn.assigns[:course]
+
+    join_reqs = JoinReqs.list_for_course(course)
+    |> Enum.filter(&(!&1.staff_req))
+
+    Enum.each join_reqs, fn req ->
+      :ok = JoinReqs.accept_join_req(req, false)
+    end
+
+    count = length(join_reqs)
+    conn
+    |> put_flash(:info, "Accepted #{count} reqs")
     |> redirect(to: Routes.staff_course_join_req_path(conn, :index, conn.assigns[:course]))
   end
 
