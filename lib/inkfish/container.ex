@@ -32,7 +32,11 @@ defmodule Inkfish.Container do
       uuid: grade.log_uuid,
       container: %{
         base: "debian:buster",
-        packages: ["clang", "clang-tools", "valgrind"],
+        packages: [
+          "clang", "clang-tools", "valgrind", "libarchive-zip-perl",
+          "libfuse-dev", "pkg-config", "libexpect-perl",  
+          "qemu-system-x86", "qemu-utils"
+        ],
         user_commands: [
           "curl https://sh.rustup.rs -sSf | sh -s -- -y",
         ],
