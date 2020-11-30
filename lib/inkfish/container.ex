@@ -34,7 +34,7 @@ defmodule Inkfish.Container do
         base: "debian:buster",
         packages: [
           "clang", "clang-tools", "valgrind", "libarchive-zip-perl",
-          "libfuse-dev", "pkg-config", "libexpect-perl",  
+          "fuse", "libfuse-dev", "pkg-config", "libexpect-perl",  
           "qemu-system-x86", "qemu-utils"
         ],
         user_commands: [
@@ -46,6 +46,7 @@ defmodule Inkfish.Container do
         script: "classic",
         SUB: Upload.upload_url(grade.sub.upload),
         GRA: Upload.upload_url(grade.grade_column.upload),
+	FUSE: "yes",
       },
     }
     Queue.add(job, &container_done/2)

@@ -10,7 +10,7 @@ my $base = `pwd`;
 chomp $base;
 
 my $COOKIE = $ENV{'COOKIE'} or die;
-my $MEM = $ENV{'MEM'} || '128m';
+my $MEM = $ENV{'MEM'} || '3072m';
 my $DIR = $ENV{'DIR'} or die;
 my $TAG = $ENV{'TAG'} or die;
 
@@ -18,6 +18,7 @@ my @FUSE_FLAGS = (
     "--device /dev/fuse",
     "--cap-add SYS_ADMIN",
     "--security-opt apparmor:unconfined",
+    #"--privileged",
 );
 
 my @FLAGS = (
@@ -30,14 +31,20 @@ for my $var (qw(SUB GRA COOKIE)) {
 }
 
 # -m is memory limit. e.g. "4m"
-push @FLAGS, @FUSE_FLAGS if $ENV{'FUSE'};
+push @FLAGS, @FUSE_FLAGS; # if $ENV{'FUSE'};
 
-my $FLAGS = join(" ", @FLAGS);
+my $FLAGS = join(" ", reverse(@FLAGS));
 
 chdir($DIR);
 
-system(qq{docker build . -t "systems:$TAG"});
-system(qq{docker run --rm $FLAGS "systems:$TAG" } .
+sub run_cmd {
+    my ($cmd) = @_;
+    #say($cmd);
+    system($cmd);
+}
+
+run_cmd(qq{docker build . -t "systems:$TAG"});
+run_cmd(qq{docker run --rm $FLAGS "systems:$TAG" } .
        qq{perl /var/tmp/driver.pl | tee "$DIR/output.log"});
 #system(qq{docker image rm "systems:$TAG"});
 
