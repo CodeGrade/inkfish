@@ -101,7 +101,7 @@ defmodule InkfishWeb.ViewHelpers do
 
     # FIXME: Global scale. Should be per course.
     # Scale for 5610 Fall 2019 was 2.2%.
-    num = num + 0
+    num = num + 350
 
     cond do
       num >= 9500 -> "A"
