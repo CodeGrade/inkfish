@@ -5,7 +5,7 @@ defmodule ReviewSeeds do
   import InkfishWeb.ViewHelpers
   import Ecto.Query, only: [from: 2]
 
-  @project_id 11
+  @project_id 19
 
   def get_assignment do
     Repo.one from as in Assignment,

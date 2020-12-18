@@ -46,6 +46,21 @@ class NumberInput extends React.Component {
       }
     });
 
+    let on_save = this.save_success1.bind(this);
+    let score1  = this.state.score;
+
+    let req = new XMLHttpRequest();
+    req.onreadystatechange = function() {
+	if (this.readyState == 4 && this.status == 200) {
+            on_save(score1);
+        }
+    };
+    req.open('POST', save_grade_path(this.state.sub_id), true);
+    req.setRequestHeader('Content-Type', "application/json; charset=UTF-8");
+    req.setRequestHeader("x-csrf-token": window.csrf_token);
+    req.send(body);
+
+    /*
     $.ajax(save_grade_path(this.state.sub_id), {
       method: "post",
       dataType: "json",
@@ -55,12 +70,17 @@ class NumberInput extends React.Component {
       success: this.save_success.bind(this),
       error: this.save_error.bind(this),
     });
+    */
 
     this.setState({saving: true});
   }
 
   save_success(resp) {
     this.setState({saving: false, saved_score: resp.score, error: null});
+  }
+  
+  save_success1(score) {
+    this.setState({saving: false, saved_score: score, error: null});
   }
   
   save_error(resp) {
