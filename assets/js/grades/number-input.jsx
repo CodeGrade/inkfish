@@ -57,7 +57,7 @@ class NumberInput extends React.Component {
     };
     req.open('POST', save_grade_path(this.state.sub_id), true);
     req.setRequestHeader('Content-Type', "application/json; charset=UTF-8");
-    req.setRequestHeader("x-csrf-token": window.csrf_token);
+    req.setRequestHeader("x-csrf-token", window.csrf_token);
     req.send(body);
 
     /*
