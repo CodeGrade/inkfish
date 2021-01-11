@@ -1,5 +1,7 @@
 <h1>Listing Courses</h1>
 
+<h2>Active Courses</h2>
+
 <table class="table table-striped">
   <thead>
     <tr>
@@ -9,7 +11,7 @@
     </tr>
   </thead>
   <tbody>
-<%= for course <- @courses do %>
+<%= for course <- Enum.filter(@courses, &(!&1.archived)) do %>
   <% reg = Enum.find(@regs, &(&1.course_id == course.id)) %>
     <tr>
       <td>
@@ -34,6 +36,43 @@
             <%= link("Request to Join",
               to: Routes.course_join_req_path(@conn, :new, course.id)) %>
           <% end %>
+        <% end %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<h2>Archived Courses</h2>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Start date</th>
+      <th>Role</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for course <- Enum.filter(@courses, &(&1.archived)) do %>
+  <% reg = Enum.find(@regs, &(&1.course_id == course.id)) %>
+    <tr>
+      <td>
+        <%= if reg do %>
+          <%= link course.name, to: Routes.course_path(@conn, :show, course) %>
+          <%= if is_staff?(reg, reg.user) do %>
+            (<%= link "Staff View", to: Routes.staff_course_path(@conn, :show, course) %>)
+          <% end %>
+        <% else %>
+          <%= course.name %>
+        <% end %>
+      </td>
+      <td><%= course.start_date %></td>
+      <td>
+        <%= if reg do %>
+          <%= show_reg_role(reg) %>
+        <% else %>
+          (none)
         <% end %>
       </td>
     </tr>

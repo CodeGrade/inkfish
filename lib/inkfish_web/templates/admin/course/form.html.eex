@@ -27,11 +27,20 @@
       Accepts markdown.
     </div>
   </div>
-  
+
+  <div class="form-group">
+    <div>Archive?</div>
+    <div class="form-check">
+      <%= checkbox f, :archived, class: "form-check-input" %>
+      <%= label f, :archived, "archive old course", class: "form-check-label" %>
+      <%= error_tag f, :archived %>
+    </div>
+  </div>
+
   <div class="form-group">
     <%= label f, :instructor %>
     <%= text_input(f, :instructor, class: "form-control autosearch",
-                   data: [topic: "users"]) %>
+      data: [topic: "users"]) %>
     <%= error_tag f, :instructor %>
     <div class="text-muted">
       Username; start typing to search

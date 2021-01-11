@@ -244,4 +244,12 @@ defmodule InkfishWeb.ViewHelpers do
       nil
     end
   end
+
+  def show_bool(vv) do
+    if vv do
+      "Yes"
+    else
+      "No"
+    end
+  end
 end
