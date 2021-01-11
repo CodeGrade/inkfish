@@ -6,7 +6,6 @@
 </p>
 
 <ul>
-
   <li>
     <strong>Name:</strong>
     <%= @course.name %>
@@ -17,6 +16,8 @@
     <%= @course.start_date %>
   </li>
 
-
+  <li>
+    <strong>Archived?</strong>
+    <%= show_bool(@course.archived) %>
+  </li>
 </ul>
-

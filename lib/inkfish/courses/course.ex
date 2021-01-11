@@ -11,6 +11,7 @@ defmodule Inkfish.Courses.Course do
     field :start_date, :date
     field :footer, :string, default: ""
     field :grade_hide_days, :integer
+    field :archived, :boolean
     has_many :regs, Inkfish.Users.Reg
     has_many :join_reqs, Inkfish.JoinReqs.JoinReq
     has_many :buckets, Inkfish.Courses.Bucket
@@ -25,7 +26,8 @@ defmodule Inkfish.Courses.Course do
   @doc false
   def changeset(course, attrs) do
     course
-    |> cast(attrs, [:name, :start_date, :footer, :instructor, :solo_teamset_id])
+    |> cast(attrs, [:name, :start_date, :footer, :archived,
+                    :instructor, :solo_teamset_id])
     |> validate_required([:name, :start_date])
     |> validate_length(:name, min: 3)
   end
