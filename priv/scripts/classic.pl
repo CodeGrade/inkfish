@@ -6,6 +6,9 @@ use IO::Handle;
 use File::Temp qw(tempfile);
 #use File::Basename qw(basename);
 
+#say("== printenv ==");
+#system("printenv");
+
 my $base = `pwd`;
 chomp $base;
 
