@@ -1,7 +1,7 @@
 matrix:
   include:
     - language: elixir
-      dist: bionic
+      dist: focal
 
       elixir: '1.11.2'
       otp_release: '23.2'
@@ -19,7 +19,7 @@ matrix:
         - psql -U postgres -c "create user inkfish with password 'oobeiGait3ie' createdb"
         - bash test/scripts/setup.sh
     - language: node_js
-      dist: bionic
+      dist: focal
       nodejs: 'stable'
 
       before_install:
