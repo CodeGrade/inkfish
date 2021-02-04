@@ -34,7 +34,7 @@
       <%= for as <- bucket.assignments do %>
         <tr>
           <td><%= link as.name, to: Routes.assignment_path(@conn, :show, as) %></td>
-          <td><%= as.due %></td>
+          <td class="human-date"><%= show_timestamp(as.due) %></td>
           <td><%= as.weight %></td>
           <td><%= show_score(@conn, as) %> / <%= as.points %></td>
         </tr>
