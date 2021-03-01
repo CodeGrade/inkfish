@@ -34,7 +34,11 @@ defmodule InkfishWeb.Staff.SubController do
       {grade, token, log}
     end)
 
-    render(conn, "show.html", sub: sub, sub_data: sub_data, autogrades: autogrades)
+    queue = Inkfish.Container.Queue.list()
+    |> Enum.filter(&(&1.idx != nil))
+
+    render(conn, "show.html", sub: sub, sub_data: sub_data,
+      autogrades: autogrades, queue: queue)
   end
 
   def update(conn, %{"id" => _id, "sub" => params}) do

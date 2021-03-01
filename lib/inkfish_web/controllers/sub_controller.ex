@@ -83,7 +83,10 @@ defmodule InkfishWeb.SubController do
       {grade, token, log}
     end)
 
-    render(conn, "show.html", sub: sub, autogrades: autogrades)
+    queue = Inkfish.Container.Queue.list()
+    |> Enum.filter(&(&1.idx != nil))
+
+    render(conn, "show.html", sub: sub, autogrades: autogrades, queue: queue)
   end
 
   def files(conn, %{"id" => id}) do

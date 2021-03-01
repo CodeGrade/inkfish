@@ -126,6 +126,7 @@
       <p><strong>Full Log</strong></p>
       <pre><%= render_autograde_log(log["log"]) %></pre>
     <% else %>
+      <p>Queue Size: <%= length(@queue) %></p>
       <div class="autograde-log"
            data-topic="<%= "autograde:" <> grade.log_uuid %>"
            data-token="<%= token %>">
