@@ -52,4 +52,26 @@ defmodule Inkfish.Itty do
   def close(uuid, rpid) do
     Server.close(uuid, rpid)
   end
+
+  @doc """
+  Interactively monitors an itty.
+  """
+  def monitor(uuid) do
+    {:ok, info} = Server.open()
+    if info[:exit] do
+      IO.inspect(info)
+    else
+      monitor_wait
+    end
+  end
+
+  def monitor_wait do
+    receive do
+      {:exit, status} ->
+        IO.inspect({:exit, status})
+      other ->
+        IO.inspect(other)
+        monitor_wait
+    end
+  end
 end

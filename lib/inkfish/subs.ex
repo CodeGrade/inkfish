@@ -170,6 +170,11 @@ defmodule Inkfish.Subs do
     end
   end
 
+  def console_regrade!(sub) do
+    uuid = hd(autograde!(sub))
+    Inkfish.Itty.monitor(uuid)
+  end
+
   def set_one_sub_active!(new_sub) do
     prev = active_sub_for_team(new_sub.assignment_id, new_sub.team_id)
     # If the active sub has been graded or late penalty ignored, we keep it.
