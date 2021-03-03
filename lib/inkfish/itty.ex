@@ -57,7 +57,7 @@ defmodule Inkfish.Itty do
   Interactively monitors an itty.
   """
   def monitor(uuid) do
-    {:ok, info} = Server.open()
+    {:ok, info} = open(uuid)
     if info[:exit] do
       IO.inspect(info)
     else
