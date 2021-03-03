@@ -226,6 +226,24 @@ defmodule Inkfish.Assignments do
     Assignment.changeset(assignment, %{})
   end
 
+  def console_finish_autograde!(%Assignment{} = asg) do
+    asg = Repo.preload(asg, [subs: [:grades, reg: :user]])
+
+    subs = Enum.filter asg.subs, fn sub ->
+      sub.active && Enum.all(sub.grades, &(&1.score == nil))
+    end
+
+    Enum.each subs, fn sub ->
+      IO.inspect({:regrade, sub.id, sub.user.email})
+      Inkfish.Subs.console_regrade!(sub)
+    end
+  end
+
+  def console_finish_autograde!(asg_id) do
+    get_assignment!(asg_id)
+    |> console_finish_autograde!
+  end
+
 
   def next_due(course_id, _user_id) do
     Repo.one from as in Assignment,

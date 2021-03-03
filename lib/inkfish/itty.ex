@@ -70,7 +70,7 @@ defmodule Inkfish.Itty do
       {:exit, status} ->
         IO.inspect({:exit, status})
       other ->
-        IO.inspect(other)
+        #IO.inspect(other)
         monitor_wait
     end
   end
