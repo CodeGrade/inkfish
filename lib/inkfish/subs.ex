@@ -171,6 +171,7 @@ defmodule Inkfish.Subs do
   end
 
   def console_regrade!(%Sub{} = sub) do
+    IO.inspect({:console_regrade, :sub, sub.id})
     uuid = hd(autograde!(sub))
     Inkfish.Itty.monitor(uuid)
   end
