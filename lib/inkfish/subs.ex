@@ -170,9 +170,14 @@ defmodule Inkfish.Subs do
     end
   end
 
-  def console_regrade!(sub) do
+  def console_regrade!(%Sub{} = sub) do
     uuid = hd(autograde!(sub))
     Inkfish.Itty.monitor(uuid)
+  end
+
+  def console_regrade!(sub_id) do
+    get_sub!(sub_id)
+    |> console_regrade!
   end
 
   def set_one_sub_active!(new_sub) do
