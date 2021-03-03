@@ -153,6 +153,13 @@ defmodule Inkfish.Subs do
   def autograde!(sub) do
     asg = Inkfish.Assignments.get_assignment!(sub.assignment_id)
 
+    sub = Repo.preload(sub, [grades: :grade_column])
+    Enum.each sub.grades, fn gr ->
+      if gr.grade_column.kind == "script" do
+        Grades.delete_grade(gr)
+      end
+    end
+
     Enum.flat_map asg.grade_columns, fn gcol ->
       if gcol.kind == "script" do
         {:ok, uuid} = Grades.create_autograde(sub.id, gcol.id)

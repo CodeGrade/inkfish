@@ -98,16 +98,11 @@ defmodule InkfishWeb.Staff.GradeController do
 
   def rerun_script(conn, %{"id" => _id}) do
     grade = conn.assigns[:grade]
-    if grade.grade_column.kind == "script" do
-      {:ok, _} = Grades.create_autograde(grade.sub_id, grade.grade_column_id)
 
-      conn
-      |> put_flash(:info, "Rerunning grading script")
-      |> redirect(to: Routes.staff_sub_path(conn, :show, grade.sub_id))
-    else
-      conn
-      |> put_flash(:error, "Can't rerun non-script grade.")
-      |> redirect(to: Routes.staff_sub_path(conn, :show, grade.sub_id))
-    end
+    Inkfish.Subs.autograde!(grade.sub)
+
+    conn
+    |> put_flash(:info, "Rerunning all grading scripts for sub")
+    |> redirect(to: Routes.staff_sub_path(conn, :show, grade.sub_id))
   end
 end
