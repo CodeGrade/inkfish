@@ -99,8 +99,7 @@ defmodule InkfishWeb.Staff.GradeController do
   def rerun_script(conn, %{"id" => _id}) do
     grade = conn.assigns[:grade]
     if grade.grade_column.kind == "script" do
-      {:ok, _} = Grades.delete_grade(grade)
-      :ok = Grades.create_autograde(grade.sub_id, grade.grade_column_id)
+      {:ok, _} = Grades.create_autograde(grade.sub_id, grade.grade_column_id)
 
       conn
       |> put_flash(:info, "Rerunning grading script")

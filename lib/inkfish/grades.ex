@@ -255,6 +255,7 @@ defmodule Inkfish.Grades do
     grade = get_grade_for_autograding!(grade.id)
 
     :ok = Container.enqueue(grade)
+    {:ok, uuid}
   end
 
 

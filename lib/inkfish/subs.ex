@@ -153,9 +153,12 @@ defmodule Inkfish.Subs do
   def autograde!(sub) do
     asg = Inkfish.Assignments.get_assignment!(sub.assignment_id)
 
-    Enum.each asg.grade_columns, fn gcol ->
+    Enum.flat_map asg.grade_columns, fn gcol ->
       if gcol.kind == "script" do
-        :ok = Grades.create_autograde(sub.id, gcol.id)
+        {:ok, uuid} = Grades.create_autograde(sub.id, gcol.id)
+        [uuid]
+      else
+        []
       end
     end
   end
