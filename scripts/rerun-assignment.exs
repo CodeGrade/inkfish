@@ -42,6 +42,12 @@ defmodule A do
       Inkfish.Itty.open(grade.log_uuid)
       A.listen
   end
+
+  def nil_script?(sub) do
+    Enum.all? sub.grades, fn gr ->
+      gr.score == nil
+    end
+  end
 end
 
 [arg1] = System.argv()
@@ -53,20 +59,22 @@ asg = Assignments.get_assignment!(asg_id)
 
 Enum.each asg.subs, fn sub ->
   sub = Subs.get_sub!(sub_id)
-  if sub.active && sub.
-  Enum.each asg.grade_columns, fn gcol ->
-    if gcol.kind == "script" do
-      uuid = Inkfish.Text.gen_uuid()
-      attrs = %{
-        grade_column_id: gcol.id,
-        sub_id: sub.id,
-        log_uuid: uuid,
-      }
-      {:ok, grade} = Grades.create_grade(attrs)
+  if sub.active && A.nil_script?(sub) do
+    Enum.each asg.grade_columns, fn gcol ->
+      if gcol.kind == "script" do
+        uuid = Inkfish.Text.gen_uuid()
+        attrs = %{
+          grade_column_id: gcol.id,
+          sub_id: sub.id,
+          log_uuid: uuid,
+        }
+        {:ok, grade} = Grades.create_grade(attrs)
 
-      grade = Grades.get_grade_for_autograding!(grade.id)
-      IO.inspect(grade)
+        grade = Grades.get_grade_for_autograding!(grade.id)
+        IO.inspect(grade)
 
-      A.autograde(grade.id)
+        A.autograde(grade.id)
+      end
     end
   end
+end
