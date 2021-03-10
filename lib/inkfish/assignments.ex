@@ -230,11 +230,11 @@ defmodule Inkfish.Assignments do
     asg = Repo.preload(asg, [subs: [:grades, reg: :user]])
 
     subs = Enum.filter asg.subs, fn sub ->
-      sub.active && Enum.all(sub.grades, &(&1.score == nil))
+      sub.active && Enum.all?(sub.grades, &(&1.score == nil))
     end
 
     Enum.each subs, fn sub ->
-      IO.inspect({:regrade, sub.id, sub.user.email})
+      IO.inspect({:regrade, sub.id, sub.reg.user.email})
       Inkfish.Subs.console_regrade!(sub)
     end
   end
