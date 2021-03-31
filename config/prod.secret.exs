@@ -13,6 +13,8 @@ database_url =
 
 config :inkfish, Inkfish.Repo,
   # ssl: true,
+  timeout: 60_000,
+  pool_timeout: 60_000,
   url: database_url,
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "20")
 

@@ -33,6 +33,7 @@ defmodule FixDupTeams do
     tsets = Teams.list_teamsets(course)
 
     Enum.each tsets, fn ts ->
+      IO.inspect {:ts, ts.id}
       Teams.get_teamset(ts.id)
       |> fix_teamset()
     end
