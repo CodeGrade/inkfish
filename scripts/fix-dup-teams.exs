@@ -1,4 +1,4 @@
-defmodule AddStaffTeam do
+defmodule FixDupTeams do
   alias Inkfish.Users
   alias Inkfish.Assignments
   alias Inkfish.Courses
@@ -6,30 +6,43 @@ defmodule AddStaffTeam do
   alias Inkfish.Teams
   alias InkfishWeb.ViewHelpers
 
-  def main(asg_id) do
-    as = Assignments.get_assignment!(asg_id)
-    bucket = Courses.get_bucket!(as.bucket_id)
-    course = Courses.get_course!(bucket.course_id)
-    staff = Users.list_regs_for_course(course)
-    |> Enum.filter(&(&1.is_staff || &1.is_prof))
+  def fix_teamset(ts) do
+    IO.puts "Teamset: #{ts.name}"
 
-    IO.inspect({as.name, bucket.name, course.name})
+    teams = Enum.reduce ts.teams, Map.new, fn (tt, acc) ->
+      uids = Enum.map(tt.regs, &(&1.user_id)) |> Enum.sort
+      Map.update acc, uids, [tt.id], fn xs ->
+        Enum.sort([tt.id | xs])
+      end
+    end
 
-    team_attrs = %{
-      active: true,
-      teamset_id: as.teamset_id,
-      regs: staff
-    }
+    Enum.each Enum.into(teams, []), fn {uids, tids} ->
+      if length(tids) > 1 do
+        IO.puts "duplicates!"
+        [_keep | drops] = tids
+        Enum.each drops, fn tid ->
+          team = Teams.get_team!(tid)
+          Teams.delete_team(team)
+        end
+      end
+    end
+  end
 
-    IO.inspect(team_attrs)
-    Inkfish.Teams.create_team(team_attrs) 
+  def main(course_id) do
+    course = Courses.get_course!(course_id)
+    tsets = Teams.list_teamsets(course)
+
+    Enum.each tsets, fn ts ->
+      Teams.get_teamset(ts.id)
+      |> fix_teamset()
+    end
   end
 end
 
 argv = System.argv()
 IO.inspect({:argv, argv})
 
-[asg_id] = argv
-{asg_id, _} = Integer.parse(asg_id)
+[course_id] = argv
+{course_id, _} = Integer.parse(course_id)
 
-AddStaffTeam.main(asg_id)
+FixDupTeams.main(course_id)

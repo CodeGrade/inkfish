@@ -17,7 +17,9 @@ export default function init() {
 class TeamManager extends React.Component {
   constructor(props) {
     super(props);
-    this.state = freeze(props.data);
+    let state = Object.assign({}, props.data);
+    state.creating = false;
+    this.state = freeze(state);
   }
 
   remove_member(reg) {
@@ -43,10 +45,14 @@ class TeamManager extends React.Component {
 
   reset_data(data) {
     data.new_team_regs = [];
+    data.creating = false;
     this.setState(freeze(data));
   }
 
   create_team(_ev) {
+    let st1 = Object.assign({}, this.state, {creating: true});
+    this.setState(st1);
+
     ajax.create_team(this.state.id, this.state.new_team_regs)
         .then((data) => {
           console.log("created", data);
@@ -122,6 +128,7 @@ class TeamManager extends React.Component {
                     regs={this.state.new_team_regs}
                     controls={RemoveFromTeam} />
           <button className="btn btn-primary"
+                  disabled={this.state.creating}
                   onClick={this.create_team.bind(this)}>
             Create Team
           </button>

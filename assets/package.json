@@ -9,6 +9,7 @@
     "test:watch": "npm test -- --watch"
   },
   "dependencies": {
+    "@babel/helper-define-map": "^7.13.12",
     "axios": "^0.21.1",
     "bootstrap-scss": "^4.5.3",
     "bootswatch": "^4.5.3",
