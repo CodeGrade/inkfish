@@ -55,7 +55,7 @@ defmodule Inkfish.Teams do
   end
 
   def get_teamset(id) do
-    Repo.one from ts in Teamset,
+    ts = Repo.one from ts in Teamset,
       where: ts.id == ^id,
       inner_join: course in assoc(ts, :course),
       left_join: cregs in assoc(course, :regs),
@@ -63,9 +63,9 @@ defmodule Inkfish.Teams do
       left_join: teams in assoc(ts, :teams),
       left_join: regs in assoc(teams, :regs),
       left_join: user in assoc(regs, :user),
-      left_join: subs in assoc(teams, :subs),
       preload: [course: {course, regs: {cregs, user: cuser}},
-                teams: {teams, subs: subs, regs: {regs, user: user}}]
+                teams: {teams, regs: {regs, user: user}}]
+    Repo.preload(ts, [teams: :subs])
   end
 
   def get_teamset_path!(id) do
